@@ -1,0 +1,3 @@
+-- Initial database schema placeholder.
+-- Spring Boot can create the development schema automatically via JPA.
+-- Add production-specific DDL migrations here as the domain model evolves.
