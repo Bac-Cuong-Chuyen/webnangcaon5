@@ -1,40 +1,22 @@
 package com.example.supplychain.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.supplychain.dto.ImportRequest;
 import com.example.supplychain.service.ImportService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/imports")
+@RequestMapping("/api/import")
 public class ImportController {
 
-    private final ImportService importService;
-
-    public ImportController(ImportService importService) {
-        this.importService = importService;
-    }
+    @Autowired
+    private ImportService importService;
 
     @PostMapping
-    public ResponseEntity<?> createImport(
-            @RequestBody ImportRequest request) {
-
-        try {
-
-            String result =
-                    importService.createImport(request);
-
-            return ResponseEntity.ok(result);
-
-        } catch (Exception e) {
-
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
-        }
+    public ResponseEntity<?> createImport(@Valid @RequestBody ImportRequest request) {
+        Object result = importService.processImport(request);
+        return ResponseEntity.ok(result);
     }
 }
