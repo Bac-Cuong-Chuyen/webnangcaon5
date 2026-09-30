@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.supplychain.dto.ExportRequest;
 import com.example.supplychain.service.ExportService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/exports")
 public class ExportController {
@@ -19,22 +21,11 @@ public class ExportController {
         this.exportService = exportService;
     }
 
+    // Lỗi validation/nghiệp vụ do GlobalExceptionHandler xử lý tập trung
     @PostMapping
-    public ResponseEntity<?> createExport(
-            @RequestBody ExportRequest request) {
+    public ResponseEntity<String> createExport(
+            @Valid @RequestBody ExportRequest request) {
 
-        try {
-
-            String result =
-                    exportService.createExport(request);
-
-            return ResponseEntity.ok(result);
-
-        } catch (Exception e) {
-
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
-        }
+        return ResponseEntity.ok(exportService.createExport(request));
     }
 }

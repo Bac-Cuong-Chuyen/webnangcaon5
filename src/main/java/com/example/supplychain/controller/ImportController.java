@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.supplychain.dto.ImportRequest;
 import com.example.supplychain.service.ImportService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/imports")
 public class ImportController {
@@ -19,22 +21,11 @@ public class ImportController {
         this.importService = importService;
     }
 
+    // Lỗi validation/nghiệp vụ do GlobalExceptionHandler xử lý tập trung
     @PostMapping
-    public ResponseEntity<?> createImport(
-            @RequestBody ImportRequest request) {
+    public ResponseEntity<String> createImport(
+            @Valid @RequestBody ImportRequest request) {
 
-        try {
-
-            String result =
-                    importService.createImport(request);
-
-            return ResponseEntity.ok(result);
-
-        } catch (Exception e) {
-
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
-        }
+        return ResponseEntity.ok(importService.createImport(request));
     }
 }

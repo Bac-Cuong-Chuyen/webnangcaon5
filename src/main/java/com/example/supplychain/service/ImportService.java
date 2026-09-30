@@ -9,10 +9,12 @@ import com.example.supplychain.dto.ImportRequest;
 import com.example.supplychain.entity.ImportDetail;
 import com.example.supplychain.entity.ImportReceipt;
 import com.example.supplychain.entity.Inventory;
+import com.example.supplychain.exception.ResourceNotFoundException;
 import com.example.supplychain.repository.ImportDetailRepository;
 import com.example.supplychain.repository.ImportReceiptRepository;
 import com.example.supplychain.repository.InventoryRepository;
 import com.example.supplychain.repository.ProductRepository;
+import com.example.supplychain.repository.WarehouseRepository;
 
 @Service
 public class ImportService {
@@ -21,17 +23,20 @@ public class ImportService {
     private final ImportDetailRepository importDetailRepository;
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
+    private final WarehouseRepository warehouseRepository;
 
     public ImportService(
             ImportReceiptRepository importReceiptRepository,
             ImportDetailRepository importDetailRepository,
             InventoryRepository inventoryRepository,
-            ProductRepository productRepository) {
+            ProductRepository productRepository,
+            WarehouseRepository warehouseRepository) {
 
         this.importReceiptRepository = importReceiptRepository;
         this.importDetailRepository = importDetailRepository;
         this.inventoryRepository = inventoryRepository;
         this.productRepository = productRepository;
+        this.warehouseRepository = warehouseRepository;
     }
 
     @Transactional
@@ -41,15 +46,23 @@ public class ImportService {
         if (request.getQuantity() == null ||
                 request.getQuantity() <= 0) {
 
-            throw new RuntimeException(
+            throw new IllegalArgumentException(
                     "Số lượng nhập phải lớn hơn 0");
         }
 
         // 2. Kiểm tra sản phẩm
         productRepository.findById(request.getProductId())
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Không tìm thấy sản phẩm"));
+                        new ResourceNotFoundException(
+                                "Không tìm thấy sản phẩm với id: "
+                                        + request.getProductId()));
+
+        // 2b. Kiểm tra kho (BR-03)
+        warehouseRepository.findById(request.getWarehouseId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Không tìm thấy kho với id: "
+                                        + request.getWarehouseId()));
 
         // 3. Tạo phiếu nhập
         ImportReceipt receipt = new ImportReceipt();
