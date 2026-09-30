@@ -9,6 +9,8 @@ import com.example.supplychain.dto.ExportRequest;
 import com.example.supplychain.entity.ExportDetail;
 import com.example.supplychain.entity.ExportReceipt;
 import com.example.supplychain.entity.Inventory;
+import com.example.supplychain.exception.BusinessConflictException;
+import com.example.supplychain.exception.ResourceNotFoundException;
 import com.example.supplychain.repository.ExportDetailRepository;
 import com.example.supplychain.repository.ExportReceiptRepository;
 import com.example.supplychain.repository.InventoryRepository;
@@ -45,7 +47,7 @@ public class ExportService {
         if (request.getQuantity() == null ||
                 request.getQuantity() <= 0) {
 
-            throw new RuntimeException(
+            throw new IllegalArgumentException(
                     "Số lượng xuất phải lớn hơn 0");
         }
 
@@ -53,7 +55,7 @@ public class ExportService {
         productRepository
                 .findById(request.getProductId())
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Không tìm thấy sản phẩm với id: "
                                         + request.getProductId()));
 
@@ -61,7 +63,7 @@ public class ExportService {
         warehouseRepository
                 .findById(request.getWarehouseId())
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Không tìm thấy kho với id: "
                                         + request.getWarehouseId()));
 
@@ -71,12 +73,12 @@ public class ExportService {
                         request.getWarehouseId(),
                         request.getProductId())
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new BusinessConflictException(
                                 "Sản phẩm chưa có trong kho này, "
                                         + "không thể xuất kho"));
 
         if (inventory.getQuantity() < request.getQuantity()) {
-            throw new RuntimeException(
+            throw new BusinessConflictException(
                     "Tồn kho không đủ. "
                             + "Hiện có: " + inventory.getQuantity()
                             + ", yêu cầu xuất: " + request.getQuantity());
