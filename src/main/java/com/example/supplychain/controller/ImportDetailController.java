@@ -12,68 +12,64 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.supplychain.entity.Product;
-import com.example.supplychain.service.ProductService;
+import com.example.supplychain.entity.ImportDetail;
+import com.example.supplychain.service.ImportDetailService;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductController {
+@RequestMapping("/api/import-details")
+public class ImportDetailController {
 
-    private final ProductService productService;
+    private final ImportDetailService importDetailService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ImportDetailController(
+            ImportDetailService importDetailService) {
+        this.importDetailService = importDetailService;
     }
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Product> createProduct(
-            @RequestBody Product product) {
+    public ResponseEntity<ImportDetail> create(
+            @RequestBody ImportDetail detail) {
 
         return ResponseEntity.ok(
-                productService.createProduct(product)
-        );
+                importDetailService.create(detail));
     }
 
     // READ ALL
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<ImportDetail>> getAll() {
 
         return ResponseEntity.ok(
-                productService.getAllProducts()
-        );
+                importDetailService.getAll());
     }
 
-    // READ ONE
+    // READ BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(
+    public ResponseEntity<ImportDetail> getById(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(
-                productService.getProductById(id)
-        );
+                importDetailService.getById(id));
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(
+    public ResponseEntity<ImportDetail> update(
             @PathVariable Long id,
-            @RequestBody Product product) {
+            @RequestBody ImportDetail detail) {
 
         return ResponseEntity.ok(
-                productService.updateProduct(id, product)
-        );
+                importDetailService.update(id, detail));
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(
+    public ResponseEntity<String> delete(
             @PathVariable Long id) {
 
-        productService.deleteProduct(id);
+        importDetailService.delete(id);
 
         return ResponseEntity.ok(
-                "Product deleted successfully"
-        );
+                "ImportDetail deleted successfully");
     }
 }
