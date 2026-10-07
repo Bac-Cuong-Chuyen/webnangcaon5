@@ -1,0 +1,965 @@
+openapi: 3.0.3
+info:
+  title: Hệ thống Quản trị Chuỗi cung ứng và Kho hàng - API
+  description: >
+    Đặc tả API cho đồ án Thiết kế Web nâng cao (B8 - Hệ thống Quản trị
+    Chuỗi cung ứng và Kho hàng). Khởi tạo Buổi 03 theo API catalog đã
+    chốt, kế thừa mô hình dữ liệu 15 thực thể của Buổi 02.
+  version: 0.3.0
+servers:
+  - url: http://localhost:8080/api
+    description: Local dev
+  - url: https://your-online-db-host/api
+    description: Online (điền URL thật khi deploy)
+
+tags:
+  - name: Auth
+  - name: User
+  - name: Category
+  - name: Product
+  - name: Warehouse
+  - name: Supplier
+  - name: Customer
+  - name: Import
+  - name: Export
+  - name: Inventory
+  - name: Transfer
+  - name: Reports
+
+security:
+  - bearerAuth: []
+
+paths:
+  # ---------------- XÁC THỰC ----------------
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Đăng nhập
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: Đăng nhập thành công, trả về JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token: { type: string }
+                  token_type: { type: string, example: Bearer }
+                  user: { $ref: '#/components/schemas/UserAccount' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Đăng xuất
+      responses:
+        '200': { description: Đăng xuất thành công }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # ---------------- VAI TRÒ ----------------
+  /roles:
+    get:
+      tags: [User]
+      summary: Danh sách vai trò/phân quyền (ADMIN)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Role' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- NGƯỜI DÙNG ----------------
+  /users:
+    get:
+      tags: [User]
+      summary: Danh sách tài khoản (ADMIN)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/UserAccount' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [User]
+      summary: Tạo tài khoản (ADMIN)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserAccountInput' }
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserAccount' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /users/{id}/roles:
+    put:
+      tags: [User]
+      summary: Gán/đổi vai trò cho tài khoản (ADMIN)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role_id]
+              properties:
+                role_id: { type: integer }
+      responses:
+        '200':
+          description: Đã cập nhật vai trò
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserAccount' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ---------------- DANH MỤC SẢN PHẨM ----------------
+  /categories:
+    get:
+      tags: [Category]
+      summary: Danh sách danh mục sản phẩm
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Category' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Category]
+      summary: Tạo danh mục (ADMIN/MANAGER)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CategoryInput' }
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Category' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- SẢN PHẨM ----------------
+  /products:
+    get:
+      tags: [Product]
+      summary: Danh sách sản phẩm
+      parameters:
+        - name: keyword
+          in: query
+          schema: { type: string }
+          description: Tìm kiếm theo tên/SKU
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Product' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Product]
+      summary: Thêm sản phẩm (ADMIN/MANAGER)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductInput' }
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Product' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /products/{id}:
+    put:
+      tags: [Product]
+      summary: Sửa sản phẩm (ADMIN/MANAGER)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductInput' }
+      responses:
+        '200':
+          description: Đã cập nhật
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Product' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Product]
+      summary: Ngừng/xóa sản phẩm (ADMIN/MANAGER)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200': { description: Đã ngừng/xóa }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ---------------- KHO HÀNG ----------------
+  /warehouses:
+    get:
+      tags: [Warehouse]
+      summary: Danh sách kho
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Warehouse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Warehouse]
+      summary: Thêm kho (ADMIN/MANAGER)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WarehouseInput' }
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Warehouse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- NHÀ CUNG CẤP ----------------
+  /suppliers:
+    get:
+      tags: [Supplier]
+      summary: Danh sách nhà cung cấp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Supplier' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Supplier]
+      summary: Thêm nhà cung cấp (ADMIN/MANAGER)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SupplierInput' }
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Supplier' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- KHÁCH HÀNG ----------------
+  /customers:
+    get:
+      tags: [Customer]
+      summary: Danh sách khách hàng
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Customer' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Customer]
+      summary: Thêm khách hàng (ADMIN/MANAGER)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CustomerInput' }
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Customer' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- PHIẾU NHẬP KHO ----------------
+  /import-receipts:
+    get:
+      tags: [Import]
+      summary: Danh sách phiếu nhập
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [DRAFT, APPROVED, CANCELLED] }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ImportReceipt' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Import]
+      summary: Lập phiếu nhập (MANAGER/STAFF)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ImportReceiptInput' }
+      responses:
+        '201':
+          description: Đã tạo phiếu nhập
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportReceipt' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /import-receipts/{id}:
+    get:
+      tags: [Import]
+      summary: Chi tiết phiếu nhập (chỉ xem phiếu thuộc quyền)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportReceipt' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Import]
+      summary: Sửa phiếu nhập (MANAGER, hoặc STAFF nếu là người tạo và chưa duyệt)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ImportReceiptInput' }
+      responses:
+        '200':
+          description: Đã cập nhật
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportReceipt' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /import-receipts/{id}/approve:
+    post:
+      tags: [Import]
+      summary: Duyệt phiếu nhập (MANAGER) - duyệt sẽ làm tăng Inventory
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Đã duyệt, Inventory đã cập nhật
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportReceipt' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  # ---------------- PHIẾU XUẤT KHO ----------------
+  /export-receipts:
+    get:
+      tags: [Export]
+      summary: Danh sách phiếu xuất
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [DRAFT, APPROVED, CANCELLED] }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ExportReceipt' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Export]
+      summary: Lập phiếu xuất (MANAGER/STAFF)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExportReceiptInput' }
+      responses:
+        '201':
+          description: Đã tạo phiếu xuất
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExportReceipt' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409':
+          description: Vượt tồn kho (BUSINESS_CONFLICT)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /export-receipts/{id}:
+    get:
+      tags: [Export]
+      summary: Chi tiết phiếu xuất (chỉ xem phiếu thuộc quyền)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExportReceipt' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Export]
+      summary: Sửa phiếu xuất (MANAGER, hoặc STAFF nếu là người tạo và chưa duyệt)
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExportReceiptInput' }
+      responses:
+        '200':
+          description: Đã cập nhật
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExportReceipt' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /export-receipts/{id}/approve:
+    post:
+      tags: [Export]
+      summary: Duyệt phiếu xuất (MANAGER) - từ chối nếu vượt tồn kho
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Đã duyệt, Inventory đã cập nhật
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExportReceipt' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: Vượt tồn kho, không thể duyệt (BUSINESS_CONFLICT)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  # ---------------- TỒN KHO ----------------
+  /inventory:
+    get:
+      tags: [Inventory]
+      summary: Xem tồn kho tức thời (mọi role)
+      parameters:
+        - name: warehouse_id
+          in: query
+          schema: { type: integer }
+        - name: product_id
+          in: query
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Inventory' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /inventory/alerts:
+    get:
+      tags: [Inventory]
+      summary: Cảnh báo sản phẩm sắp hết hàng (quantity <= min_quantity)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Inventory' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # ---------------- ĐIỀU CHUYỂN KHO ----------------
+  /stock-transfers:
+    get:
+      tags: [Transfer]
+      summary: Danh sách phiếu điều chuyển kho (MANAGER)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/StockTransfer' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Transfer]
+      summary: Lập phiếu điều chuyển kho (MANAGER)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StockTransferInput' }
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StockTransfer' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /stock-transfers/{id}/approve:
+    post:
+      tags: [Transfer]
+      summary: Duyệt điều chuyển (MANAGER) - giảm kho nguồn, tăng kho đích
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Đã duyệt, Inventory 2 kho đã cập nhật
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StockTransfer' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  # ---------------- NHẬT KÝ THAO TÁC ----------------
+  /audit-logs:
+    get:
+      tags: [User]
+      summary: Xem nhật ký thao tác hệ thống (chỉ ADMIN)
+      parameters:
+        - name: user_id
+          in: query
+          schema: { type: integer }
+        - name: from
+          in: query
+          schema: { type: string, format: date }
+        - name: to
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AuditLog' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- BÁO CÁO THỐNG KÊ ----------------
+  /reports/import-export:
+    get:
+      tags: [Reports]
+      summary: Thống kê nhập/xuất theo khoảng thời gian (MANAGER/EXECUTIVE)
+      parameters:
+        - name: from
+          in: query
+          schema: { type: string, format: date }
+        - name: to
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200': { description: OK }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /reports/inventory:
+    get:
+      tags: [Reports]
+      summary: Báo cáo giá trị tồn kho (MANAGER/EXECUTIVE)
+      responses:
+        '200': { description: OK }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /reports/top-products:
+    get:
+      tags: [Reports]
+      summary: Top sản phẩm nhập/xuất nhiều nhất (MANAGER/EXECUTIVE)
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 10 }
+      responses:
+        '200': { description: OK }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+
+  responses:
+    BadRequest:
+      description: Dữ liệu không hợp lệ
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Chưa xác thực hoặc token không hợp lệ (UNAUTHORIZED)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Đã xác thực nhưng không đủ quyền (FORBIDDEN)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Không tìm thấy tài nguyên (RESOURCE_NOT_FOUND)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Vi phạm quy tắc nghiệp vụ (BUSINESS_CONFLICT)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServerError:
+      description: Lỗi hệ thống ngoài dự kiến (INTERNAL_ERROR)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          enum: [UNAUTHORIZED, FORBIDDEN, RESOURCE_NOT_FOUND, BUSINESS_CONFLICT, INTERNAL_ERROR, VALIDATION_ERROR]
+        message: { type: string }
+        timestamp: { type: string, format: date-time }
+        path: { type: string }
+
+    Role:
+      type: object
+      properties:
+        role_id: { type: integer }
+        role_code: { type: string, enum: [ADMIN, WAREHOUSE_MANAGER, WAREHOUSE_STAFF, EXECUTIVE] }
+        role_name: { type: string }
+
+    UserAccount:
+      type: object
+      properties:
+        user_id: { type: integer }
+        username: { type: string }
+        full_name: { type: string }
+        status: { type: string, enum: [ACTIVE, DISABLED] }
+        role_id: { type: integer }
+    UserAccountInput:
+      type: object
+      required: [username, password, full_name, role_id]
+      properties:
+        username: { type: string }
+        password: { type: string, format: password }
+        full_name: { type: string }
+        role_id: { type: integer }
+
+    Category:
+      type: object
+      properties:
+        category_id: { type: integer }
+        category_name: { type: string }
+        description: { type: string }
+    CategoryInput:
+      type: object
+      required: [category_name]
+      properties:
+        category_name: { type: string }
+        description: { type: string }
+
+    Product:
+      type: object
+      properties:
+        product_id: { type: integer }
+        sku: { type: string }
+        product_name: { type: string }
+        unit: { type: string }
+        price: { type: number, format: double }
+        category_id: { type: integer }
+    ProductInput:
+      type: object
+      required: [sku, product_name, unit, price, category_id]
+      properties:
+        sku: { type: string }
+        product_name: { type: string }
+        unit: { type: string }
+        price: { type: number, format: double, minimum: 0 }
+        category_id: { type: integer }
+
+    Warehouse:
+      type: object
+      properties:
+        warehouse_id: { type: integer }
+        warehouse_code: { type: string }
+        warehouse_name: { type: string }
+        location: { type: string }
+    WarehouseInput:
+      type: object
+      required: [warehouse_code, warehouse_name]
+      properties:
+        warehouse_code: { type: string }
+        warehouse_name: { type: string }
+        location: { type: string }
+
+    Supplier:
+      type: object
+      properties:
+        supplier_id: { type: integer }
+        supplier_name: { type: string }
+        phone: { type: string }
+        email: { type: string }
+    SupplierInput:
+      type: object
+      required: [supplier_name]
+      properties:
+        supplier_name: { type: string }
+        phone: { type: string }
+        email: { type: string }
+
+    Customer:
+      type: object
+      properties:
+        customer_id: { type: integer }
+        customer_name: { type: string }
+        phone: { type: string }
+        email: { type: string }
+    CustomerInput:
+      type: object
+      required: [customer_name]
+      properties:
+        customer_name: { type: string }
+        phone: { type: string }
+        email: { type: string }
+
+    ImportDetail:
+      type: object
+      properties:
+        import_detail_id: { type: integer }
+        import_id: { type: integer }
+        product_id: { type: integer }
+        quantity: { type: number, minimum: 0 }
+        unit_price: { type: number, minimum: 0 }
+    ImportReceipt:
+      type: object
+      properties:
+        import_id: { type: integer }
+        import_date: { type: string, format: date }
+        supplier_id: { type: integer }
+        warehouse_id: { type: integer }
+        status: { type: string, enum: [DRAFT, APPROVED, CANCELLED] }
+        created_by: { type: integer }
+        approved_by: { type: integer, nullable: true }
+        details:
+          type: array
+          items: { $ref: '#/components/schemas/ImportDetail' }
+    ImportReceiptInput:
+      type: object
+      required: [supplier_id, warehouse_id, details]
+      properties:
+        supplier_id: { type: integer }
+        warehouse_id: { type: integer }
+        details:
+          type: array
+          items:
+            type: object
+            required: [product_id, quantity, unit_price]
+            properties:
+              product_id: { type: integer }
+              quantity: { type: number, minimum: 0 }
+              unit_price: { type: number, minimum: 0 }
+
+    ExportDetail:
+      type: object
+      properties:
+        export_detail_id: { type: integer }
+        export_id: { type: integer }
+        product_id: { type: integer }
+        quantity: { type: number, minimum: 0 }
+        unit_price: { type: number, minimum: 0 }
+    ExportReceipt:
+      type: object
+      properties:
+        export_id: { type: integer }
+        export_date: { type: string, format: date }
+        customer_id: { type: integer }
+        warehouse_id: { type: integer }
+        status: { type: string, enum: [DRAFT, APPROVED, CANCELLED] }
+        created_by: { type: integer }
+        approved_by: { type: integer, nullable: true }
+        details:
+          type: array
+          items: { $ref: '#/components/schemas/ExportDetail' }
+    ExportReceiptInput:
+      type: object
+      required: [customer_id, warehouse_id, details]
+      properties:
+        customer_id: { type: integer }
+        warehouse_id: { type: integer }
+        details:
+          type: array
+          items:
+            type: object
+            required: [product_id, quantity, unit_price]
+            properties:
+              product_id: { type: integer }
+              quantity: { type: number, minimum: 0 }
+              unit_price: { type: number, minimum: 0 }
+
+    Inventory:
+      type: object
+      properties:
+        inventory_id: { type: integer }
+        product_id: { type: integer }
+        warehouse_id: { type: integer }
+        quantity: { type: number }
+        min_quantity: { type: number }
+
+    TransferDetail:
+      type: object
+      properties:
+        transfer_detail_id: { type: integer }
+        transfer_id: { type: integer }
+        product_id: { type: integer }
+        quantity: { type: number, minimum: 0 }
+    StockTransfer:
+      type: object
+      properties:
+        transfer_id: { type: integer }
+        from_warehouse_id: { type: integer }
+        to_warehouse_id: { type: integer }
+        status: { type: string, enum: [DRAFT, APPROVED, CANCELLED] }
+        created_by: { type: integer }
+        approved_by: { type: integer, nullable: true }
+        details:
+          type: array
+          items: { $ref: '#/components/schemas/TransferDetail' }
+    StockTransferInput:
+      type: object
+      required: [from_warehouse_id, to_warehouse_id, details]
+      properties:
+        from_warehouse_id: { type: integer }
+        to_warehouse_id: { type: integer }
+        details:
+          type: array
+          items:
+            type: object
+            required: [product_id, quantity]
+            properties:
+              product_id: { type: integer }
+              quantity: { type: number, minimum: 0 }
+
+    AuditLog:
+      type: object
+      properties:
+        audit_id: { type: integer }
+        user_id: { type: integer }
+        action: { type: string }
+        entity_name: { type: string }
+        created_at: { type: string, format: date-time }
