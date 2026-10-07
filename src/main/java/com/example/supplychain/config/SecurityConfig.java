@@ -96,7 +96,10 @@ public class SecurityConfig {
                     "/api/auth/register",
                     "/api/auth/login",
                     "/api/auth/logout",
-                    "/h2-console/**"
+                    "/h2-console/**",
+                    "/openapi.yaml",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
                 ).permitAll()
 
                 // Chỉ ADMIN
