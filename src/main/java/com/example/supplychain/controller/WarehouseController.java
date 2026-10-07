@@ -12,68 +12,63 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.supplychain.entity.Product;
-import com.example.supplychain.service.ProductService;
+import com.example.supplychain.entity.Warehouse;
+import com.example.supplychain.service.WarehouseService;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductController {
+@RequestMapping("/api/warehouses")
+public class WarehouseController {
 
-    private final ProductService productService;
+    private final WarehouseService warehouseService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public WarehouseController(WarehouseService warehouseService) {
+        this.warehouseService = warehouseService;
     }
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Product> createProduct(
-            @RequestBody Product product) {
+    public ResponseEntity<Warehouse> create(
+            @RequestBody Warehouse warehouse) {
 
         return ResponseEntity.ok(
-                productService.createProduct(product)
-        );
+                warehouseService.create(warehouse));
     }
 
     // READ ALL
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Warehouse>> getAll() {
 
         return ResponseEntity.ok(
-                productService.getAllProducts()
-        );
+                warehouseService.getAll());
     }
 
-    // READ ONE
+    // READ BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(
+    public ResponseEntity<Warehouse> getById(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(
-                productService.getProductById(id)
-        );
+                warehouseService.getById(id));
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(
+    public ResponseEntity<Warehouse> update(
             @PathVariable Long id,
-            @RequestBody Product product) {
+            @RequestBody Warehouse warehouse) {
 
         return ResponseEntity.ok(
-                productService.updateProduct(id, product)
-        );
+                warehouseService.update(id, warehouse));
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(
+    public ResponseEntity<String> delete(
             @PathVariable Long id) {
 
-        productService.deleteProduct(id);
+        warehouseService.delete(id);
 
         return ResponseEntity.ok(
-                "Product deleted successfully"
-        );
+                "Warehouse deleted successfully");
     }
 }
