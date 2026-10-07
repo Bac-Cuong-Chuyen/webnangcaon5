@@ -12,68 +12,64 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.supplychain.entity.Product;
-import com.example.supplychain.service.ProductService;
+import com.example.supplychain.entity.ImportReceipt;
+import com.example.supplychain.service.ImportReceiptService;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductController {
+@RequestMapping("/api/import-receipts")
+public class ImportReceiptController {
 
-    private final ProductService productService;
+    private final ImportReceiptService importReceiptService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ImportReceiptController(
+            ImportReceiptService importReceiptService) {
+        this.importReceiptService = importReceiptService;
     }
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Product> createProduct(
-            @RequestBody Product product) {
+    public ResponseEntity<ImportReceipt> create(
+            @RequestBody ImportReceipt receipt) {
 
         return ResponseEntity.ok(
-                productService.createProduct(product)
-        );
+                importReceiptService.create(receipt));
     }
 
     // READ ALL
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<ImportReceipt>> getAll() {
 
         return ResponseEntity.ok(
-                productService.getAllProducts()
-        );
+                importReceiptService.getAll());
     }
 
-    // READ ONE
+    // READ BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(
+    public ResponseEntity<ImportReceipt> getById(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(
-                productService.getProductById(id)
-        );
+                importReceiptService.getById(id));
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(
+    public ResponseEntity<ImportReceipt> update(
             @PathVariable Long id,
-            @RequestBody Product product) {
+            @RequestBody ImportReceipt receipt) {
 
         return ResponseEntity.ok(
-                productService.updateProduct(id, product)
-        );
+                importReceiptService.update(id, receipt));
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(
+    public ResponseEntity<String> delete(
             @PathVariable Long id) {
 
-        productService.deleteProduct(id);
+        importReceiptService.delete(id);
 
         return ResponseEntity.ok(
-                "Product deleted successfully"
-        );
+                "ImportReceipt deleted successfully");
     }
 }
