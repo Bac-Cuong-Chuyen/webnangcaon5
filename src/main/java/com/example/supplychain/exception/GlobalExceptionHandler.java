@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 400: @Valid trên DTO không hợp lệ
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(
             MethodArgumentNotValidException ex, HttpServletRequest req) {
@@ -28,7 +27,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", message, req);
     }
 
-    // 400: body sai JSON hoặc sai kiểu (ví dụ quantity = "abc")
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleBadBody(
             HttpMessageNotReadableException ex, HttpServletRequest req) {
@@ -37,31 +35,30 @@ public class GlobalExceptionHandler {
                 "Body JSON sai định dạng hoặc sai kiểu dữ liệu", req);
     }
 
-    // 400: kiểm tra phòng thủ trong Service
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgument(
             IllegalArgumentException ex, HttpServletRequest req) {
 
-        return build(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", ex.getMessage(), req);
+        return build(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR",
+                ex.getMessage(), req);
     }
 
-    // 404
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(
             ResourceNotFoundException ex, HttpServletRequest req) {
 
-        return build(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND", ex.getMessage(), req);
+        return build(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND",
+                ex.getMessage(), req);
     }
 
-    // 409
     @ExceptionHandler(BusinessConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflict(
             BusinessConflictException ex, HttpServletRequest req) {
 
-        return build(HttpStatus.CONFLICT, "BUSINESS_CONFLICT", ex.getMessage(), req);
+        return build(HttpStatus.CONFLICT, "BUSINESS_CONFLICT",
+                ex.getMessage(), req);
     }
 
-    // 403: tránh handler 500 bên dưới nuốt lỗi phân quyền
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleForbidden(
             AccessDeniedException ex, HttpServletRequest req) {
@@ -70,7 +67,14 @@ public class GlobalExceptionHandler {
                 "Không đủ quyền thực hiện thao tác này", req);
     }
 
-    // 500
+    @ExceptionHandler(TransferBusinessException.class)
+    public ResponseEntity<ErrorResponse> handleTransferBusiness(
+            TransferBusinessException ex, HttpServletRequest req) {
+
+        return build(HttpStatus.UNPROCESSABLE_ENTITY,
+                "TRANSFER_BUSINESS_ERROR", ex.getMessage(), req);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleOther(
             Exception ex, HttpServletRequest req) {
@@ -80,9 +84,16 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> build(
-            HttpStatus status, String code, String message, HttpServletRequest req) {
+            HttpStatus status, String code, String message,
+            HttpServletRequest req) {
 
         return ResponseEntity.status(status).body(
-                new ErrorResponse(code, message, LocalDateTime.now(), req.getRequestURI()));
+                new ErrorResponse(
+                        code,
+                        message,
+                        LocalDateTime.now(),
+                        req.getRequestURI()
+                )
+        );
     }
 }
