@@ -1,11 +1,11 @@
 package com.example.supplychain.config;
 
+import com.example.supplychain.entity.UserAccount;
 import com.example.supplychain.repository.UserAccountRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -19,47 +19,43 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final UserAccountRepository userAccountRepository;
+
+    public SecurityConfig(UserAccountRepository userAccountRepository) {
+        this.userAccountRepository = userAccountRepository;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Cho Spring Security biết cách tìm user trong bảng user_account khi đăng nhập
     @Bean
-    public UserDetailsService userDetailsService(UserAccountRepository userAccountRepository) {
-        return username -> userAccountRepository.findByUsername(username)
-                .map(account -> User.withUsername(account.getUsername())
-                        .password(account.getPassword())
-                        .roles(account.getRole() != null ? account.getRole().name() : "WAREHOUSE_STAFF")
-                        .build())
-                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user: " + username));
-    }
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            UserAccount account = userAccountRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng: " + username));
 
-    // AuthenticationManager dùng UserDetailsService + BCrypt ở trên
-    @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-                                                       PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(provider);
+            return User.builder()
+                    .username(account.getUsername())
+                    .password(account.getPassword())
+                    .roles("USER")
+                    .build();
+        };
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-
-            // Cho phép tự do /api/auth/** (đăng ký/đăng nhập) và h2-console.
-            // Các API còn lại trong /api/** bắt buộc phải đăng nhập (TC08).
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
-                .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             );
-
-        http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
-
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
