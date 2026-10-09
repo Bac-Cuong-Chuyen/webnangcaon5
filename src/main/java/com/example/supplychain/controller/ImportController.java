@@ -1,31 +1,32 @@
 package com.example.supplychain.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.supplychain.dto.ImportRequest;
 import com.example.supplychain.service.ImportService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/imports")
+@RequestMapping("/api/import")
 public class ImportController {
 
-    private final ImportService importService;
-
-    public ImportController(ImportService importService) {
-        this.importService = importService;
-    }
+    @Autowired
+    private ImportService importService;
 
     // Lỗi validation/nghiệp vụ do GlobalExceptionHandler xử lý tập trung
     @PostMapping
+<<<<<<< HEAD
+    public ResponseEntity<?> createImport(@Valid @RequestBody ImportRequest request) {
+        Object result = importService.processImport(request);
+        return ResponseEntity.ok(result);
+=======
     public ResponseEntity<String> createImport(
             @Valid @RequestBody ImportRequest request) {
 
         return ResponseEntity.ok(importService.createImport(request));
+>>>>>>> upstream/master
     }
 }
