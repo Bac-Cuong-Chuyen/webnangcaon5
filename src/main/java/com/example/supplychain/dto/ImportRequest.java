@@ -1,18 +1,34 @@
 package com.example.supplychain.dto;
 
+<<<<<<< HEAD
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+=======
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+>>>>>>> upstream/master
 
 public class ImportRequest {
 
     @NotBlank(message = "Mã phiếu nhập không được để trống")
     private String receiptCode;
 
+<<<<<<< HEAD
+=======
+    @NotNull(message = "warehouseId là bắt buộc")
+    private Long warehouseId;
+
+    @NotNull(message = "productId là bắt buộc")
+>>>>>>> upstream/master
     private Long productId;
     private Long warehouseId;
     private Long supplierId;
     private Long userId;
 
+<<<<<<< HEAD
     @Min(value = 1, message = "Số lượng nhập phải lớn hơn 0")
     private Integer quantity;
 
@@ -77,3 +93,9 @@ public class ImportRequest {
         this.quantity = quantity;
     }
 }
+=======
+    @NotNull(message = "quantity là bắt buộc")
+    @Positive(message = "Số lượng nhập phải lớn hơn 0")
+    private Integer quantity;
+}
+>>>>>>> upstream/master
