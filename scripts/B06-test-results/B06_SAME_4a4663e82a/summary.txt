@@ -1,0 +1,12 @@
+﻿===== KET QUA B06-05 =====
+Ma dot test: B06_SAME_4a4663e82a
+Che do: 50 requests - SAME transfer
+So phieu tao: 1; So luong moi phieu: 3
+ID phieu dau: 51
+Kho nguon: 3; Kho dich: 4
+San pham: 2; Ton nguon ban dau: 10
+Tong request: 50
+HTTP 200: 1; HTTP 422: 49; Loi khac: 0
+Thoi gian: 39 ms
+Ky vong HTTP: 1 x 200; 49 x 422
+Ky vong CSDL: nguon 7; dich 3; COMPLETED 1
