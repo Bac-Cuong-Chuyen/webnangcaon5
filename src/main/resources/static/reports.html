@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Báo cáo nhập, xuất, chuyển kho</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--tx:#18212b;--mut:#566170;--br:#d5dbe3;--ac:#0f5f8c;--ac2:#c2570c;--warn:#8a4b00;--warnbg:#fff1d6;--err:#b42318}
+@media(prefers-color-scheme:dark){:root{--bg:#10151b;--card:#18202a;--tx:#e6ebf1;--mut:#9aa7b6;--br:#2c3744;--ac:#5cb8e6;--ac2:#f0a060;--warn:#ffcf8a;--warnbg:#3a2b10;--err:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+h1{font-size:1.25rem;margin:0}
+.card{background:var(--card);border:1px solid var(--br);border-radius:6px;padding:14px;margin-bottom:12px}
+label{display:block;font-size:.85rem;color:var(--mut);margin-bottom:2px}
+input[type=text],input[type=password],input[type=date],input[type=number]{width:100%;padding:6px 8px;border:1px solid var(--br);border-radius:4px;background:var(--bg);color:var(--tx);font:inherit}
+button{padding:7px 14px;border:1px solid var(--ac);border-radius:4px;background:var(--ac);color:var(--bg);font:inherit;cursor:pointer}
+button.ghost{background:transparent;color:var(--ac)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ac2);outline-offset:1px}
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{background:transparent;color:var(--tx);border-color:var(--br)}
+.tabs button[aria-selected=true]{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+.banner{background:var(--warnbg);color:var(--warn);padding:8px 12px;border-radius:4px;margin-bottom:12px;font-weight:600}
+.err{color:var(--err)}
+.sum{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:8px}
+.sum b{font-size:1.4rem;display:block}
+.sum span{color:var(--mut);font-size:.85rem}
+.chart{position:relative;height:300px}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{padding:6px 10px;border-bottom:1px solid var(--br);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Báo cáo kho</h1>
+  <div id="userBox"></div>
+</header>
+
+<section id="loginCard" class="card" hidden>
+  <p style="margin-top:0">Đăng nhập để xem báo cáo.</p>
+  <div class="grid">
+    <div><label for="lu">Tên đăng nhập</label><input id="lu" type="text" autocomplete="username"></div>
+    <div><label for="lp">Mật khẩu</label><input id="lp" type="password" autocomplete="current-password"></div>
+    <div><button id="loginBtn" type="button">Đăng nhập</button></div>
+  </div>
+  <p id="loginErr" class="err" role="alert"></p>
+</section>
+
+<div class="tabs" role="tablist" id="tabs"></div>
+
+<div id="demoBanner" class="banner" hidden>DỮ LIỆU MẪU – chưa lấy từ API. Không dùng làm minh chứng.</div>
+
+<section class="card">
+  <div class="grid">
+    <div><label for="fFrom">Từ ngày</label><input id="fFrom" type="date"></div>
+    <div><label for="fTo">Đến ngày</label><input id="fTo" type="date"></div>
+    <div data-for="import export"><label for="fProduct">Mã sản phẩm</label><input id="fProduct" type="number" min="1"></div>
+    <div data-for="transfer"><label for="fFromWh">Kho nguồn (ID)</label><input id="fFromWh" type="number" min="1"></div>
+    <div data-for="transfer"><label for="fToWh">Kho đích (ID)</label><input id="fToWh" type="number" min="1"></div>
+    <div><button id="applyBtn" type="button">Xem báo cáo</button></div>
+  </div>
+  <label style="margin-top:10px"><input id="demoChk" type="checkbox" checked> Dùng dữ liệu mẫu (bỏ chọn khi API báo cáo đã sẵn sàng)</label>
+</section>
+
+<section class="card" id="result">
+  <p id="status" role="status"></p>
+  <div id="content" hidden>
+    <div class="sum">
+      <div><b id="sumReceipts">0</b><span>Tổng số phiếu</span></div>
+      <div><b id="sumQty">0</b><span>Tổng số lượng hàng</span></div>
+    </div>
+    <div class="chart"><canvas id="chart" aria-label="Biểu đồ báo cáo"></canvas></div>
+    <div class="wrap" style="margin-top:12px">
+      <table>
+        <thead><tr><th>Kỳ / Nhóm</th><th>Số phiếu</th><th>Số lượng hàng</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p><button id="csvBtn" type="button" class="ghost">Xuất CSV (mở được bằng Excel)</button></p>
+  </div>
+</section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+/* ===== CẤU HÌNH: sửa theo hợp đồng API Bắc chốt ===== */
+const REPORTS = {
+  import:   { title:'Báo cáo nhập kho',   url:'/api/reports/imports',   qty:'Số lượng hàng nhập',   cnt:'Số phiếu nhập',   params:{from:'fFrom',to:'fTo',productId:'fProduct'} },
+  export:   { title:'Báo cáo xuất kho',   url:'/api/reports/exports',   qty:'Số lượng hàng xuất',   cnt:'Số phiếu xuất',   params:{from:'fFrom',to:'fTo',productId:'fProduct'} },
+  transfer: { title:'Báo cáo chuyển kho', url:'/api/reports/transfers', qty:'Số lượng hàng chuyển', cnt:'Số phiếu chuyển', params:{from:'fFrom',to:'fTo',fromWarehouseId:'fFromWh',toWarehouseId:'fToWh'} }
+};
+/* Chuyển 1 dòng response của API sang dạng chung. Sửa tên trường tại đây. */
+function mapRow(r){
+  return {
+    label: String(r.label ?? r.date ?? r.period ?? r.route ?? ''),
+    receipts: Number(r.receiptCount ?? r.receipts ?? 0),
+    quantity: Number(r.totalQuantity ?? r.quantity ?? 0)
+  };
+}
+/* ===================================================== */
+
+const $ = id => document.getElementById(id);
+let tab = 'import', data = [], chart = null, isDemo = false;
+
+function demoData(){
+  const out = [];
+  for (let i = 1; i <= 7; i++) out.push({ label:'2026-10-0'+i, receiptCount: 2+i%3, totalQuantity: 40+i*13 });
+  return out;
+}
+
+function setStatus(msg, isErr){ const s=$('status'); s.textContent=msg||''; s.className=isErr?'err':''; }
+function fmt(n){ return n.toLocaleString('vi-VN'); }
+
+function buildTabs(){
+  const t = $('tabs');
+  Object.entries(REPORTS).forEach(([k,v])=>{
+    const b = document.createElement('button');
+    b.type='button'; b.role='tab'; b.textContent=v.title; b.dataset.k=k;
+    b.onclick=()=>{ tab=k; refreshTabs(); load(); };
+    t.appendChild(b);
+  });
+  refreshTabs();
+}
+function refreshTabs(){
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected', b.dataset.k===tab));
+  document.querySelectorAll('[data-for]').forEach(d=>d.hidden = !d.dataset.for.split(' ').includes(tab));
+}
+
+function showLogin(show){ $('loginCard').hidden = !show; }
+function showUser(u){
+  const box = $('userBox');
+  box.textContent='';
+  if (!u) return;
+  const s = document.createElement('span');
+  s.textContent = (u.fullName || u.username) + (u.role ? ' ('+u.role+') ' : ' ');
+  const b = document.createElement('button');
+  b.type='button'; b.className='ghost'; b.textContent='Đăng xuất';
+  b.onclick = async ()=>{ await fetch('/api/auth/logout',{method:'POST'}); showUser(null); data=[]; $('content').hidden=true; showLogin(true); };
+  box.append(s,b);
+}
+
+$('loginBtn').onclick = async ()=>{
+  $('loginErr').textContent='';
+  try{
+    const res = await fetch('/api/auth/login',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({username:$('lu').value, password:$('lp').value})
+    });
+    if(!res.ok){ $('loginErr').textContent = await res.text() || 'Đăng nhập thất bại.'; return; }
+    showUser(await res.json()); showLogin(false); $('lp').value=''; load();
+  }catch(e){ $('loginErr').textContent='Không kết nối được máy chủ.'; }
+};
+
+async function load(){
+  const cfg = REPORTS[tab];
+  isDemo = $('demoChk').checked;
+  $('demoBanner').hidden = !isDemo;
+  $('content').hidden = true;
+  setStatus('Đang tải '+cfg.title.toLowerCase()+'...');
+  try{
+    let rows;
+    if (isDemo) rows = demoData();
+    else {
+      const q = new URLSearchParams();
+      Object.entries(cfg.params).forEach(([name,id])=>{ const v=$(id).value; if(v) q.set(name,v); });
+      const res = await fetch(cfg.url+(q.toString()?'?'+q:''),{headers:{Accept:'application/json'}});
+      if (res.status===401){ showLogin(true); setStatus('Cần đăng nhập để xem báo cáo.', true); return; }
+      if (res.status===403){ setStatus('Tài khoản này không có quyền xem báo cáo.', true); return; }
+      if (!res.ok){ setStatus('Không tải được báo cáo (mã lỗi '+res.status+'). Kiểm tra đường dẫn API trong phần CẤU HÌNH.', true); return; }
+      const j = await res.json();
+      rows = Array.isArray(j) ? j : (j.content ?? j.data ?? []);
+    }
+    data = rows.map(mapRow);
+    render();
+  }catch(e){ setStatus('Không kết nối được máy chủ hoặc dữ liệu trả về sai định dạng.', true); }
+}
+
+function render(){
+  const cfg = REPORTS[tab];
+  if (!data.length){ setStatus('Không có dữ liệu trong khoảng đã chọn. Thử đổi khoảng ngày hoặc bỏ bớt bộ lọc.'); $('content').hidden=true; return; }
+  setStatus('');
+  $('content').hidden=false;
+  $('sumReceipts').textContent = fmt(data.reduce((s,r)=>s+r.receipts,0));
+  $('sumQty').textContent = fmt(data.reduce((s,r)=>s+r.quantity,0));
+  const tb = $('rows'); tb.textContent='';
+  data.forEach(r=>{
+    const tr = document.createElement('tr');
+    [r.label, fmt(r.receipts), fmt(r.quantity)].forEach(v=>{ const td=document.createElement('td'); td.textContent=v; tr.appendChild(td); });
+    tb.appendChild(tr);
+  });
+  const css = getComputedStyle(document.documentElement);
+  const c1 = css.getPropertyValue('--ac').trim(), c2 = css.getPropertyValue('--ac2').trim(), tx = css.getPropertyValue('--tx').trim(), br = css.getPropertyValue('--br').trim();
+  if (chart) chart.destroy();
+  chart = new Chart($('chart'),{
+    data:{ labels:data.map(r=>r.label), datasets:[
+      { type:'bar',  label:cfg.qty, data:data.map(r=>r.quantity), backgroundColor:c1, yAxisID:'y' },
+      { type:'line', label:cfg.cnt, data:data.map(r=>r.receipts), borderColor:c2, backgroundColor:c2, yAxisID:'y1' }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ title:{display:true,text:cfg.title+(isDemo?' (DỮ LIỆU MẪU)':''),color:tx}, legend:{labels:{color:tx}} },
+      scales:{
+        x:{ ticks:{color:tx}, grid:{color:br} },
+        y:{ position:'left', beginAtZero:true, title:{display:true,text:'Số lượng hàng',color:tx}, ticks:{color:tx}, grid:{color:br} },
+        y1:{ position:'right', beginAtZero:true, title:{display:true,text:'Số phiếu',color:tx}, ticks:{color:tx}, grid:{drawOnChartArea:false} }
+      } }
+  });
+}
+
+/* CSV: UTF-8 BOM, dấu ; (Excel tiếng Việt), ngoặc kép, chống công thức */
+function csvCell(v){
+  let s = String(v);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return /[;"\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+}
+$('csvBtn').onclick = ()=>{
+  const lines = [['Kỳ / Nhóm','Số phiếu','Số lượng hàng']].concat(data.map(r=>[r.label,r.receipts,r.quantity]))
+    .map(row=>row.map(csvCell).join(';'));
+  const blob = new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (isDemo?'MAU_':'')+'bao-cao-'+tab+'-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+};
+
+$('applyBtn').onclick = load;
+$('demoChk').onchange = load;
+buildTabs(); load();
+</script>
+</body>
+</html>
