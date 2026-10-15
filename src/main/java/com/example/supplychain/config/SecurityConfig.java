@@ -84,6 +84,8 @@ public class SecurityConfig {
                                 "/h2-console/**"
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/files/**")
+                                .hasAnyRole("ADMIN", "WAREHOUSE_MANAGER", "WAREHOUSE_STAFF")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
