@@ -3,6 +3,7 @@ package com.example.supplychain.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.supplychain.entity.Role;
 import com.example.supplychain.entity.UserAccount;
 import com.example.supplychain.repository.UserAccountRepository;
+import com.example.supplychain.service.AuditLogService;
 
 @RestController
 @RequestMapping("/api/user-accounts")
@@ -21,12 +24,16 @@ public class UserAccountController {
 
     private final UserAccountRepository userAccountRepository;
 
+    private final AuditLogService auditLogService;
+
     private final BCryptPasswordEncoder passwordEncoder =
             new BCryptPasswordEncoder();
 
     public UserAccountController(
-            UserAccountRepository userAccountRepository) {
+            UserAccountRepository userAccountRepository,
+            AuditLogService auditLogService) {
         this.userAccountRepository = userAccountRepository;
+        this.auditLogService = auditLogService;
     }
 
     // READ ALL
@@ -64,6 +71,8 @@ public class UserAccountController {
                         .orElseThrow(() -> new RuntimeException(
                                 "Không tìm thấy UserAccount với id: " + id));
 
+        Role oldRole = existing.getRole();
+
         existing.setUsername(user.getUsername());
         existing.setRole(user.getRole());
 
@@ -76,6 +85,21 @@ public class UserAccountController {
 
         UserAccount saved =
                 userAccountRepository.save(existing);
+
+        if (oldRole != saved.getRole()) {
+
+            String actor = SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getName();
+
+            auditLogService.record(
+                    actor,
+                    "ROLE_CHANGE",
+                    "UserAccount:" + saved.getId()
+                            + "; oldRole=" + oldRole
+                            + "; newRole=" + saved.getRole());
+        }
 
         saved.setPassword(null);
 
