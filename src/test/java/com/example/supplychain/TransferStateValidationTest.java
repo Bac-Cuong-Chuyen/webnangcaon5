@@ -20,7 +20,11 @@ import com.example.supplychain.entity.Warehouse;
 import com.example.supplychain.repository.StockTransferRepository;
 import com.example.supplychain.repository.WarehouseRepository;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "spring.sql.init.mode=never",
+        "spring.datasource.url=jdbc:h2:mem:transfer_state_test;DB_CLOSE_DELAY=-1",
+        "spring.jpa.hibernate.ddl-auto=create-drop"
+})
 @AutoConfigureMockMvc
 @Transactional
 @WithMockUser(roles = "WAREHOUSE_STAFF")
@@ -42,8 +46,8 @@ class TransferStateValidationTest {
         "CANCELLED, complete",
         "CANCELLED, cancel"
     })
-    void rejectInvalidTransition(String initialStatus, String action)
-            throws Exception {
+    void rejectInvalidTransition(
+            String initialStatus, String action) throws Exception {
 
         Warehouse source = createWarehouse("B06-STATE-SRC");
         Warehouse target = createWarehouse("B06-STATE-DST");
@@ -54,10 +58,13 @@ class TransferStateValidationTest {
         transfer.setToWarehouseId(target.getId());
         transfer.setTransferDate(LocalDate.now());
         transfer.setStatus(initialStatus);
+
         transfer = transferRepository.saveAndFlush(transfer);
 
-        mvc.perform(post("/api/transfers/{id}/{action}",
-                        transfer.getId(), action))
+        mvc.perform(post(
+                        "/api/transfers/{id}/{action}",
+                        transfer.getId(),
+                        action))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.code")
                         .value("TRANSFER_BUSINESS_ERROR"));
