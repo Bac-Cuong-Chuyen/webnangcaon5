@@ -3,6 +3,7 @@ package com.example.supplychain.controller;
 import com.example.supplychain.entity.Role;
 import com.example.supplychain.entity.UserAccount;
 import com.example.supplychain.repository.UserAccountRepository;
+import com.example.supplychain.service.AuditLogService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,6 +33,8 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
+    private final AuditLogService auditLogService;
+
     private final BCryptPasswordEncoder passwordEncoder =
             new BCryptPasswordEncoder();
 
@@ -40,10 +43,12 @@ public class AuthController {
 
     public AuthController(
             UserAccountRepository userAccountRepository,
-            AuthenticationManager authenticationManager) {
+            AuthenticationManager authenticationManager,
+            AuditLogService auditLogService) {
 
         this.userAccountRepository = userAccountRepository;
         this.authenticationManager = authenticationManager;
+        this.auditLogService = auditLogService;
     }
 
     // =========================
@@ -116,6 +121,11 @@ public class AuthController {
                     userAccountRepository
                             .findByUsername(user.getUsername())
                             .orElseThrow();
+
+            auditLogService.record(
+                    authentication.getName(),
+                    "LOGIN_SUCCESS",
+                    "UserAccount:" + account.getId());
 
             account.setPassword(null);
 

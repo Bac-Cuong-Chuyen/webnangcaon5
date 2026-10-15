@@ -3,6 +3,7 @@ package com.example.supplychain.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.supplychain.entity.Product;
 import com.example.supplychain.service.ProductService;
+import com.example.supplychain.service.AuditLogService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -21,8 +23,13 @@ public class ProductController {
 
     private final ProductService productService;
 
-    public ProductController(ProductService productService) {
+    private final AuditLogService auditLogService;
+
+    public ProductController(
+            ProductService productService,
+            AuditLogService auditLogService) {
         this.productService = productService;
+        this.auditLogService = auditLogService;
     }
 
     // CREATE
@@ -71,6 +78,16 @@ public class ProductController {
             @PathVariable Long id) {
 
         productService.deleteProduct(id);
+
+        String actor = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        auditLogService.record(
+                actor,
+                "DELETE_PRODUCT",
+                "Product:" + id);
 
         return ResponseEntity.ok(
                 "Product deleted successfully"
