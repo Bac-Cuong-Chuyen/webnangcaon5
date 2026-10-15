@@ -1,36 +1,10 @@
 package com.example.supplychain.service;
 
-import com.example.supplychain.dto.ImportRequest;
-import com.example.supplychain.exception.ResourceNotFoundException;
-import com.example.supplychain.repository.ProductRepository;
-import com.example.supplychain.repository.SupplierRepository;
-import com.example.supplychain.repository.WarehouseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-<<<<<<< HEAD
-@Service
-public class ImportService {
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private WarehouseRepository warehouseRepository;
-
-    @Autowired
-    private SupplierRepository supplierRepository;
-
-    @Transactional
-    public String processImport(ImportRequest request) {
-        if (!productRepository.existsById(request.getProductId())) {
-            throw new ResourceNotFoundException("Sản phẩm không tồn tại với ID: " + request.getProductId());
-        }
-
-        if (!warehouseRepository.existsById(request.getWarehouseId())) {
-            throw new ResourceNotFoundException("Kho hàng không tồn tại với ID: " + request.getWarehouseId());
-=======
 import com.example.supplychain.dto.ImportRequest;
 import com.example.supplychain.entity.ImportDetail;
 import com.example.supplychain.entity.ImportReceipt;
@@ -40,6 +14,7 @@ import com.example.supplychain.repository.ImportDetailRepository;
 import com.example.supplychain.repository.ImportReceiptRepository;
 import com.example.supplychain.repository.InventoryRepository;
 import com.example.supplychain.repository.ProductRepository;
+import com.example.supplychain.repository.SupplierRepository;
 import com.example.supplychain.repository.WarehouseRepository;
 
 @Service
@@ -50,102 +25,106 @@ public class ImportService {
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
     private final WarehouseRepository warehouseRepository;
+    private final SupplierRepository supplierRepository;
 
     public ImportService(
             ImportReceiptRepository importReceiptRepository,
             ImportDetailRepository importDetailRepository,
             InventoryRepository inventoryRepository,
             ProductRepository productRepository,
-            WarehouseRepository warehouseRepository) {
+            WarehouseRepository warehouseRepository,
+            SupplierRepository supplierRepository) {
 
         this.importReceiptRepository = importReceiptRepository;
         this.importDetailRepository = importDetailRepository;
         this.inventoryRepository = inventoryRepository;
         this.productRepository = productRepository;
         this.warehouseRepository = warehouseRepository;
+        this.supplierRepository = supplierRepository;
     }
 
     @Transactional
     public String createImport(ImportRequest request) {
+        return processImport(request);
+    }
 
-        // 1. Kiểm tra số lượng
-        if (request.getQuantity() == null ||
-                request.getQuantity() <= 0) {
+    @Transactional
+    public String processImport(ImportRequest request) {
 
+        if (request.getQuantity() == null || request.getQuantity() <= 0) {
             throw new IllegalArgumentException(
-                    "Số lượng nhập phải lớn hơn 0");
+                    "So luong nhap phai lon hon 0");
         }
 
-        // 2. Kiểm tra sản phẩm
+        if (request.getProductId() == null
+                || request.getWarehouseId() == null) {
+            throw new IllegalArgumentException(
+                    "productId va warehouseId la bat buoc");
+        }
+
         productRepository.findById(request.getProductId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Không tìm thấy sản phẩm với id: "
-                                        + request.getProductId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Khong tim thay san pham: "
+                                + request.getProductId()));
 
-        // 2b. Kiểm tra kho (BR-03)
         warehouseRepository.findById(request.getWarehouseId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Không tìm thấy kho với id: "
-                                        + request.getWarehouseId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Khong tim thay kho: "
+                                + request.getWarehouseId()));
 
-        // 3. Tạo phiếu nhập
+        if (request.getSupplierId() != null
+                && !supplierRepository.existsById(request.getSupplierId())) {
+            throw new ResourceNotFoundException(
+                    "Khong tim thay nha cung cap: "
+                            + request.getSupplierId());
+        }
+
         ImportReceipt receipt = new ImportReceipt();
-
         receipt.setReceiptCode(request.getReceiptCode());
         receipt.setReceiptDate(LocalDate.now());
         receipt.setStatus("COMPLETED");
 
-        ImportReceipt savedReceipt =
-                importReceiptRepository.save(receipt);
+        ImportReceipt savedReceipt = importReceiptRepository.save(receipt);
 
-        // 4. Tạo chi tiết nhập
         ImportDetail detail = new ImportDetail();
-
         detail.setReceiptId(savedReceipt.getId());
         detail.setProductId(request.getProductId());
         detail.setQuantity(request.getQuantity());
-
         importDetailRepository.save(detail);
 
-        // 5. Tìm tồn kho theo kho + sản phẩm
-        Inventory inventory =
-                inventoryRepository
-                        .findByWarehouseIdAndProductId(
-                                request.getWarehouseId(),
-                                request.getProductId())
-                        .orElse(null);
+        Inventory inventory = inventoryRepository
+                .findByWarehouseIdAndProductId(
+                        request.getWarehouseId(),
+                        request.getProductId())
+                .orElse(null);
 
-        // 6. Nếu chưa có tồn kho → tạo mới
         if (inventory == null) {
-
             inventory = new Inventory();
-
-            inventory.setWarehouseId(
-                    request.getWarehouseId());
-
-            inventory.setProductId(
-                    request.getProductId());
-
-            inventory.setQuantity(
-                    request.getQuantity());
-
+            inventory.setWarehouseId(request.getWarehouseId());
+            inventory.setProductId(request.getProductId());
+            inventory.setQuantity(0);
             inventory.setMinimumQuantity(0);
-
-        } else {
-
-            // 7. Nếu đã có → cộng số lượng
-            inventory.setQuantity(
-                    inventory.getQuantity()
-                            + request.getQuantity());
->>>>>>> upstream/master
         }
 
-        if (!supplierRepository.existsById(request.getSupplierId())) {
-            throw new ResourceNotFoundException("Nhà cung cấp không tồn tại với ID: " + request.getSupplierId());
+        if (inventory.getQuantity() == null || inventory.getQuantity() < 0) {
+            throw new IllegalArgumentException(
+                    "Ton kho khong hop le");
         }
 
-        return "Nhập kho thành công cho sản phẩm ID " + request.getProductId() + " tại kho ID " + request.getWarehouseId();
+        int updatedQuantity;
+        try {
+            updatedQuantity = Math.addExact(
+                    inventory.getQuantity(),
+                    request.getQuantity());
+        } catch (ArithmeticException ex) {
+            throw new IllegalArgumentException(
+                    "So luong ton kho vuot gioi han cho phep");
+        }
+
+        inventory.setQuantity(updatedQuantity);
+        inventoryRepository.save(inventory);
+
+        return "Nhap kho thanh cong. Ton kho hien tai: "
+                + updatedQuantity;
     }
 }
