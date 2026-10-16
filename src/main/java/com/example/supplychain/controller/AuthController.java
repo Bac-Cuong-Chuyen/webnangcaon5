@@ -66,9 +66,7 @@ public class AuthController {
                     .body("Username đã tồn tại");
         }
 
-        if (user.getRole() == null) {
-            user.setRole(Role.WAREHOUSE_STAFF);
-        }
+        user.setRole(Role.WAREHOUSE_STAFF);
 
         user.setPassword(
                 passwordEncoder.encode(user.getPassword())
