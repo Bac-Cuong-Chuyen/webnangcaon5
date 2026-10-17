@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 @Configuration
 public class SecurityConfig {
@@ -115,6 +116,19 @@ public class SecurityConfig {
                 )
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())
+                        .referrerPolicy(ref -> ref
+                                .policy(ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; "
+                              + "script-src 'self' 'unsafe-inline'; "
+                              + "style-src 'self' 'unsafe-inline'; "
+                              + "img-src 'self' data:; "
+                              + "font-src 'self'; "
+                              + "connect-src 'self'; "
+                              + "object-src 'none'; "
+                              + "base-uri 'self'; "
+                              + "form-action 'self'; "
+                              + "frame-ancestors 'self'"))
                 );
 
         return http.build();
