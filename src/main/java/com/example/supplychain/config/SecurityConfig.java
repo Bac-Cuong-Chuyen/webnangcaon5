@@ -3,23 +3,23 @@ package com.example.supplychain.config;
 
 import com.example.supplychain.entity.UserAccount;
 import com.example.supplychain.repository.UserAccountRepository;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     private final UserAccountRepository userAccountRepository;
@@ -36,47 +36,85 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            UserAccount account = userAccountRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(
-                            "Khong tim thay nguoi dung: " + username));
+            UserAccount account = userAccountRepository
+                    .findByUsername(username)
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException("Khong tim thay nguoi dung"));
 
-            String roleName = account.getRole() == null
-                    ? "USER"
-                    : account.getRole().name();
+            if (account.getRole() == null) {
+                throw new UsernameNotFoundException("Tai khoan chua duoc cap vai tro");
+            }
 
             return User.builder()
                     .username(account.getUsername())
                     .password(account.getPassword())
-                    .roles(roleName)
+                    .roles(account.getRole().name())
                     .build();
         };
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(
-                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/import",
-                                "/api/import/**",
-                                "/api/imports",
-                                "/api/imports/**",
-                                "/api/exports",
-                                "/api/exports/**")
-                        .hasRole("WAREHOUSE_STAFF")
-                        .anyRequest().permitAll());
+    public DaoAuthenticationProvider authenticationProvider(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
 
-        return http.build();
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
     }
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
+        http
+                .csrf(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/logout",
+                                "/h2-console/**"
+                        ).permitAll()
+                        .requestMatchers("/api/admin/**")
+                                .hasRole("ADMIN")
+                        .requestMatchers("/api/user-accounts", "/api/user-accounts/**")
+                                .hasRole("ADMIN")
+                        .requestMatchers("/api/audit-logs", "/api/audit-logs/**")
+                                .hasRole("ADMIN")
+                        .requestMatchers("/api/users/**")
+                                .hasRole("ADMIN")
+                        .requestMatchers("/api/files/**")
+                                .hasAnyRole("ADMIN", "WAREHOUSE_MANAGER", "WAREHOUSE_STAFF")
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll()
+                )
+                .exceptionHandling(errors -> errors
+                        .authenticationEntryPoint((request, response, ex) -> {
+                            response.setStatus(401);
+                            response.setContentType("application/json");
+                            response.getWriter().write(
+                                    "{\"status\":401,\"message\":\"Unauthorized\"}");
+                        })
+                )
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; object-src 'none'; frame-ancestors 'self'; base-uri 'self'"))
+                        .referrerPolicy(referrer -> referrer.policy(
+                                ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .frameOptions(frame -> frame.sameOrigin())
+                        .httpStrictTransportSecurity(hsts -> hsts
+                                .includeSubDomains(true)
+                                .maxAgeInSeconds(31536000))
+                );
+
+        return http.build();
     }
 }

@@ -1,0 +1,22 @@
+V4 B07-B10 source patch — built from webnangcaon5-after-25-pass.zip.
+
+IMPORTANT: Your local repo was MID-MERGE (all conflicts resolved but MERGE_HEAD remains).
+Do not use git restore, stash pop, reset, or merge abort. Do not copy the whole
+project over your .git directory.
+
+1. Back up your local project. Copy only the paths in the accompanying
+   V4_CHANGED_FILES_ONLY.zip over the SAME paths in the project root.
+   Keep your existing .git folder, Git branches, and untracked zip archives.
+2. Verify the copied files were saved (especially Java source in src/).
+3. Run: mvn clean test
+   You already had 25 passing tests. This patch adds 15 regression tests,
+   so expect 40 tests if every class is discovered. Actual result must be
+   verified on your Windows machine; Maven could not be run in this sandbox.
+4. Review: git status / git diff / git diff --cached
+   Stage only source files after inspecting them. Do NOT stage .zip evidence.
+5. Because merge is unfinished, conclude it ONLY after passing tests and
+   confirming all merged changes are intentional. Do not force-push to main.
+6. Capture BM1-BM12 manual evidence yourself. The risk checklist records what
+   remains unverified, and is not an assertion of full security certification.
+
+This patch does not write Chapter 5, Chapter 6, or create screenshots/videos.
