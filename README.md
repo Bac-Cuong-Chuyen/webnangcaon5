@@ -1,4 +1,4 @@
-# Supply Chain Management
+﻿# Supply Chain Management
 
 Spring Boot starter project for supply chain management.
 
@@ -13,9 +13,9 @@ Spring Boot starter project for supply chain management.
 mvn spring-boot:run
 ```
 
-The application starts at `http://localhost:8080`.
+The application starts at `http://localhost:8081`.
 
-The development H2 console is available at `http://localhost:8080/h2-console` with JDBC URL `jdbc:h2:mem:supplychain`, user `sa`, and an empty password.
+The development H2 console is available at `http://localhost:8081/h2-console` with JDBC URL `jdbc:h2:mem:supplychain`, user `sa`, and an empty password.
 
 ## Structure
 
@@ -28,3 +28,8 @@ The development H2 console is available at `http://localhost:8080/h2-console` wi
 - `exception`: application exceptions and handlers
 - `config`: application configuration
 - `database`: SQL scripts and database notes
+
+## TÃ i liá»‡u cÃ¡c buá»•i thá»±c hÃ nh
+
+- [Buá»•i 01: Khá»Ÿi Ä‘á»™ng dá»± Ã¡n](docs/BUOI_01_KHOI_DONG.md)
+
