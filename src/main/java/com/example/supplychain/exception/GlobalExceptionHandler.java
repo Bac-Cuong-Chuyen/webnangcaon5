@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -136,6 +138,23 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNPROCESSABLE_ENTITY,
                 "TRANSFER_BUSINESS_ERROR",
                 ex.getMessage(),
+                req
+        );
+    }
+
+    // 404: không tìm thấy đường dẫn hoặc tài nguyên
+    @ExceptionHandler({
+            NoHandlerFoundException.class,
+            NoResourceFoundException.class
+    })
+    public ResponseEntity<ErrorResponse> handleMissingRoute(
+            Exception ex,
+            HttpServletRequest req) {
+
+        return build(
+                HttpStatus.NOT_FOUND,
+                "RESOURCE_NOT_FOUND",
+                "Không tìm thấy đường dẫn hoặc tài nguyên",
                 req
         );
     }
