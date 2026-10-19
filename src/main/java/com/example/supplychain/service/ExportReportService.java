@@ -3,6 +3,7 @@ package com.example.supplychain.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,12 @@ public class ExportReportService {
             int totalRows,
             long totalQuantity) {
     }
+    @Cacheable (
+        cacheNames = "exportReports",
+        key = "@reportCacheInvalidation.exportKey(#p0, #p1)",
+        condition = "#p0 != null && #p1 != null && !#p0.isAfter(#p1)",
+        sync = true
+    )
 
     @Transactional(readOnly = true)
     public ReportResponse report(

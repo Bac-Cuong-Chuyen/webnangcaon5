@@ -1,0 +1,8 @@
+﻿"Code","Status","Detail"
+"CACHE01","PASS","Lan dau cache miss, nap lai DB, ket qua dung."
+"CACHE02","PASS","Goi lap cache hit, khong nap lai, noi dung giu nguyen."
+"CACHE03","PASS","Khac khoang ngay dung cache key khac, tong hop dung."
+"CACHE04","PASS","ADMIN van bi chan xem bao cao da co cache (HTTP403)."
+"CACHE05","PASS","MANAGER khong doc duoc thong ke cache ADMIN (HTTP403)."
+"CACHE06","PASS","Doi SKU -> invalidation -> bao cao nap du lieu moi, tong luong khong doi."
+"CACHE07","PASS","Da khoi phuc san pham va bao cao ve dung du lieu truoc test."

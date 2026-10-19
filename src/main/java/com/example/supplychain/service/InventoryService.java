@@ -1,4 +1,7 @@
 package com.example.supplychain.service;
+import org.springframework.transaction.annotation.Transactional;
+import com.example.supplychain.util.PageLimits;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -53,5 +56,10 @@ public class InventoryService {
     public void delete(Long id) {
         Inventory existing = getById(id);
         inventoryRepository.delete(existing);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<Inventory> getPage(int page, int size) {
+        return inventoryRepository.findAll(PageLimits.of(page, size));
     }
 }

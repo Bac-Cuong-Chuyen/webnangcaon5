@@ -1,0 +1,36 @@
+Time: 2026-10-19T16:45:00.700310100+07:00
+Phase: before
+Environment: LOCAL B09 H2 file, read only
+Parameters: fromDate=2026-10-01; toDate=2026-10-15
+DB version: 2.3.232 (2024-08-11)
+product count: 5001
+warehouse count: 3
+import_receipt count: 5000
+import_detail count: 5000
+export_receipt count: 5000
+export_detail count: 5000
+stock_transfer count: 5000
+transfer_detail count: 5000
+inventory count: 10000
+
+Existing indexes
+AUDIT_LOG | PRIMARY_KEY_B | ID | 1
+CATEGORY | PRIMARY_KEY_3 | ID | 1
+CUSTOMER | PRIMARY_KEY_5 | ID | 1
+EXPORT_DETAIL | PRIMARY_KEY_8 | ID | 1
+EXPORT_RECEIPT | PRIMARY_KEY_1 | ID | 1
+IMPORT_DETAIL | PRIMARY_KEY_E | ID | 1
+IMPORT_RECEIPT | PRIMARY_KEY_5D | ID | 1
+INVENTORY | PRIMARY_KEY_2 | ID | 1
+PRODUCT | PRIMARY_KEY_18 | ID | 1
+STOCK_TRANSFER | PRIMARY_KEY_E7 | ID | 1
+SUPPLIERS | PRIMARY_KEY_A | ID | 1
+TRANSFER_DETAIL | PRIMARY_KEY_24 | ID | 1
+USER_ACCOUNT | PRIMARY_KEY_9 | ID | 1
+WAREHOUSE | PRIMARY_KEY_2F | ID | 1
+
+imports SQL SHA256: 40f561d211c1818116036b7fefd77f2ec225e09a52654c94fa50576bcf1a2f12
+
+exports SQL SHA256: b44ab38e1a667ee01ce845ae03290050ccf65229647770120d9d7df9cb4b91e1
+
+transfers SQL SHA256: 833f3a593b354f2be9f16f7f2696c9a5fd5c09975548ed1525bf4856c71a694a

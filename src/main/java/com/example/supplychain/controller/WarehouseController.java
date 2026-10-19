@@ -1,4 +1,6 @@
 package com.example.supplychain.controller;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.example.supplychain.util.PageLimits;
 
 import java.util.List;
 
@@ -36,10 +38,10 @@ public class WarehouseController {
 
     // READ ALL
     @GetMapping
-    public ResponseEntity<List<Warehouse>> getAll() {
-
-        return ResponseEntity.ok(
-                warehouseService.getAll());
+    public ResponseEntity<List<Warehouse>> getAll(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
+        return PageLimits.response(warehouseService.getPage(page, size));
     }
 
     // READ BY ID
