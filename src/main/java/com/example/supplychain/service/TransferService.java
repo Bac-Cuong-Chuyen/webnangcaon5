@@ -31,6 +31,7 @@ public class TransferService {
 
     @Transactional
     public StockTransfer createTransfer(TransferRequest request) {
+        ReceiptAccess.requireManager();
         Long source = request.getFromWarehouseId();
         Long target = request.getToWarehouseId();
 
@@ -64,6 +65,7 @@ public class TransferService {
         transfer.setToWarehouseId(target);
         transfer.setTransferDate(LocalDate.now());
         transfer.setStatus("DRAFT");
+        transfer.setCreatedBy(ReceiptAccess.actor());
         transferRepository.save(transfer);
 
         TransferDetail detail = new TransferDetail();
@@ -77,7 +79,9 @@ public class TransferService {
 
     @Transactional
     public StockTransfer completeTransfer(Long id) {
+        ReceiptAccess.requireManager();
         StockTransfer transfer = lockDraft(id);
+        ReceiptAccess.requireDifferentApprover(transfer.getCreatedBy());
         Long sourceId = transfer.getFromWarehouseId();
         Long targetId = transfer.getToWarehouseId();
 
@@ -142,11 +146,13 @@ public class TransferService {
         inventoryRepository.save(target);
 
         transfer.setStatus("COMPLETED");
+        transfer.setApprovedBy(ReceiptAccess.actor());
         return transferRepository.save(transfer);
     }
 
     @Transactional
     public StockTransfer cancelTransfer(Long id) {
+        ReceiptAccess.requireManager();
         StockTransfer transfer = lockDraft(id);
         transfer.setStatus("CANCELLED");
         return transferRepository.save(transfer);

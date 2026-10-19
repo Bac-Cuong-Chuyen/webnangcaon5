@@ -1,6 +1,7 @@
 package com.example.supplychain.entity;
 
 import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,4 +25,8 @@ public class StockTransfer {
     private Long toWarehouseId;
     private LocalDate transferDate;
     private String status;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String createdBy;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String approvedBy;
 }

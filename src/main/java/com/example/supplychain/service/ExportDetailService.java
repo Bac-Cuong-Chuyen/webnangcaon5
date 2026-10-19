@@ -57,7 +57,9 @@ public class ExportDetailService {
         return receipts.findById(id).orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
     }
     private void writable(Long id) {
-        ExportReceipt row = parent(id);
+        if (id == null) throw new IllegalArgumentException("receiptId la bat buoc");
+        ExportReceipt row = receipts.findByIdForUpdate(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
         ReceiptAccess.requireEdit(row.getCreatedBy(), row.getStatus());
     }
 }

@@ -27,4 +27,9 @@ public class ExportReceipt {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String createdBy;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String approvedBy;
+
+    private Long warehouseId;
 }

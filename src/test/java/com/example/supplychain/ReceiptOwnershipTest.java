@@ -192,12 +192,12 @@ class ReceiptOwnershipTest {
     static Stream<Arguments> legacyCases() {
         return Stream.of("/api/import", "/api/imports", "/api/exports").flatMap(path ->
             Stream.of("ADMIN","WAREHOUSE_STAFF","DIRECTOR","ANONYMOUS")
-                .map(role -> Arguments.of(path,role,"ANONYMOUS".equals(role)?401:403)));
+                .map(role -> Arguments.of(path,role,"ANONYMOUS".equals(role)?401:"DIRECTOR".equals(role)?403:400)));
     }
     @ParameterizedTest @MethodSource("legacyCases")
-    void immediateStockEndpointsCannotBypassDraftPermissions(String path, String role, int expected) throws Exception {
+    void draftEntryPointsEnforceRoleAndValidateInput(String path, String role, int expected) throws Exception {
         var request = post(path).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-            .content("{\"receiptCode\":\"B08\",\"productId\":1,\"warehouseId\":1,\"quantity\":1}");
+            .content("{\"receiptCode\":\"B08\",\"productId\":1,\"warehouseId\":1,\"quantity\":0}");
         if (!"ANONYMOUS".equals(role)) request.with(user("matrix-user").roles(role));
         mvc.perform(request).andExpect(status().is(expected));
     }

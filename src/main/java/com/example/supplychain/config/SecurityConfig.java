@@ -108,9 +108,17 @@ public class SecurityConfig {
                                 "/api/products", "/api/products/**",
                                 "/api/warehouses", "/api/warehouses/**")
                                 .hasAnyRole("ADMIN", "WAREHOUSE_MANAGER")
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/import/*/approve", "/api/imports/*/approve", "/api/exports/*/approve")
+                                .hasRole("WAREHOUSE_MANAGER")
                         .requestMatchers("/api/import", "/api/import/**", "/api/imports", "/api/imports/**",
                                 "/api/exports", "/api/exports/**")
+                                .hasAnyRole("ADMIN", "WAREHOUSE_MANAGER", "WAREHOUSE_STAFF")
+                        .requestMatchers(HttpMethod.GET, "/api/inventories", "/api/inventories/**")
+                                .authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/inventories/*")
                                 .hasRole("WAREHOUSE_MANAGER")
+                        .requestMatchers("/api/inventories", "/api/inventories/**").denyAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/import-receipts", "/api/import-receipts/**",
                                 "/api/export-receipts", "/api/export-receipts/**",
