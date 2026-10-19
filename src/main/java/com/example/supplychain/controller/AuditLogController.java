@@ -14,7 +14,10 @@ import com.example.supplychain.entity.AuditLog;
 import com.example.supplychain.service.AuditLogSearchService;
 
 @RestController
-@RequestMapping("/api/admin/audit-logs")
+@RequestMapping({
+        "/api/admin/audit-logs",
+        "/api/audit-logs"
+})
 public class AuditLogController {
 
     private final AuditLogSearchService searchService;
@@ -46,7 +49,13 @@ public class AuditLogController {
             int size) {
 
         Page<AuditLog> result = searchService.search(
-                username, action, fromTime, toTime, page, size);
+                username,
+                action,
+                fromTime,
+                toTime,
+                page,
+                size
+        );
 
         return new SearchResponse(
                 result.getContent(),
@@ -55,7 +64,8 @@ public class AuditLogController {
                 result.getTotalElements(),
                 result.getTotalPages(),
                 result.isFirst(),
-                result.isLast());
+                result.isLast()
+        );
     }
 
     public record SearchResponse(
@@ -65,6 +75,7 @@ public class AuditLogController {
             long totalElements,
             int totalPages,
             boolean first,
-            boolean last) {
+            boolean last
+    ) {
     }
 }

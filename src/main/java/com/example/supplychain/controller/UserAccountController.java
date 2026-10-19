@@ -1,10 +1,12 @@
 package com.example.supplychain.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +14,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.supplychain.entity.Role;
 import com.example.supplychain.entity.UserAccount;
+import com.example.supplychain.exception.ResourceNotFoundException;
 import com.example.supplychain.repository.UserAccountRepository;
 import com.example.supplychain.service.AuditLogService;
 
@@ -23,102 +27,74 @@ import com.example.supplychain.service.AuditLogService;
 public class UserAccountController {
 
     private final UserAccountRepository userAccountRepository;
-
     private final AuditLogService auditLogService;
+    private final PasswordEncoder passwordEncoder;
 
-    private final BCryptPasswordEncoder passwordEncoder =
-            new BCryptPasswordEncoder();
-
-    public UserAccountController(
-            UserAccountRepository userAccountRepository,
-            AuditLogService auditLogService) {
+    public UserAccountController(UserAccountRepository userAccountRepository,
+                                 AuditLogService auditLogService,
+                                 PasswordEncoder passwordEncoder) {
         this.userAccountRepository = userAccountRepository;
         this.auditLogService = auditLogService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // READ ALL
     @GetMapping
-    public ResponseEntity<List<UserAccount>> getAll() {
-        List<UserAccount> users = userAccountRepository.findAll();
-
-        users.forEach(user -> user.setPassword(null));
-
-        return ResponseEntity.ok(users);
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<Map<String, Object>>> getAll() {
+        List<Map<String, Object>> response = userAccountRepository.findAll().stream()
+                .map(UserAccountController::safeAccount)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
-    // READ BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<UserAccount> getById(
-            @PathVariable Long id) {
-
-        UserAccount user = userAccountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Không tìm thấy UserAccount với id: " + id));
-
-        user.setPassword(null);
-
-        return ResponseEntity.ok(user);
+    @Transactional(readOnly = true)
+    public ResponseEntity<Map<String, Object>> getById(@PathVariable Long id) {
+        UserAccount account = userAccountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("UserAccount khong ton tai: " + id));
+        return ResponseEntity.ok(safeAccount(account));
     }
 
-    // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<UserAccount> update(
-            @PathVariable Long id,
-            @RequestBody UserAccount user) {
-
-        UserAccount existing =
-                userAccountRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException(
-                                "Không tìm thấy UserAccount với id: " + id));
-
-        Role oldRole = existing.getRole();
-
-        existing.setUsername(user.getUsername());
-        existing.setRole(user.getRole());
-
-        if (user.getPassword() != null &&
-                !user.getPassword().isBlank()) {
-
-            existing.setPassword(
-                    passwordEncoder.encode(user.getPassword()));
+    public ResponseEntity<Map<String, Object>> update(@PathVariable Long id,
+                                                       @RequestBody UserAccount request) {
+        UserAccount existing = userAccountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("UserAccount khong ton tai: " + id));
+        if (request == null || request.getUsername() == null || request.getUsername().isBlank()
+                || request.getRole() == null) {
+            throw new IllegalArgumentException("Username va role khong hop le");
         }
-
-        UserAccount saved =
-                userAccountRepository.save(existing);
-
+        Role oldRole = existing.getRole();
+        existing.setUsername(request.getUsername().trim());
+        existing.setRole(request.getRole());
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            existing.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        UserAccount saved = userAccountRepository.save(existing);
         if (oldRole != saved.getRole()) {
-
-            String actor = SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getName();
-
-            auditLogService.record(
-                    actor,
-                    "ROLE_CHANGE",
-                    "UserAccount:" + saved.getId()
-                            + "; oldRole=" + oldRole
+            String actor = SecurityContextHolder.getContext().getAuthentication().getName();
+            auditLogService.record(actor, "ROLE_CHANGE",
+                    "UserAccount:" + saved.getId() + "; oldRole=" + oldRole
                             + "; newRole=" + saved.getRole());
         }
-
-        saved.setPassword(null);
-
-        return ResponseEntity.ok(saved);
+        // Never null out the managed JPA entity password just to hide it in JSON.
+        return ResponseEntity.ok(safeAccount(saved));
     }
 
-    // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(
-            @PathVariable Long id) {
-
-        UserAccount existing =
-                userAccountRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException(
-                                "Không tìm thấy UserAccount với id: " + id));
-
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        UserAccount existing = userAccountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("UserAccount khong ton tai: " + id));
         userAccountRepository.delete(existing);
+        return ResponseEntity.ok("UserAccount deleted successfully");
+    }
 
-        return ResponseEntity.ok(
-                "UserAccount deleted successfully");
+    private static Map<String, Object> safeAccount(UserAccount account) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("id", account.getId());
+        response.put("username", account.getUsername());
+        response.put("password", null);
+        response.put("role", account.getRole());
+        return response;
     }
 }
