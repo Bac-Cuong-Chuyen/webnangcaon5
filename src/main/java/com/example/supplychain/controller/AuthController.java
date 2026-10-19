@@ -30,6 +30,9 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextRepository;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.CacheControl;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,6 +62,22 @@ public class AuthController {
         this.auditLogService = auditLogService;
         this.loginAttemptService = loginAttemptService;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> currentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).cacheControl(CacheControl.noStore()).build();
+        }
+        return userAccountRepository.findByUsername(authentication.getName())
+                .<ResponseEntity<?>>map(account -> {
+                    Map<String, Object> safe = toSafeResponse(account);
+                    safe.remove("password");
+                    return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(safe);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .cacheControl(CacheControl.noStore()).build());
     }
 
     @PostMapping("/register")
