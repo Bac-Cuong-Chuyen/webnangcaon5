@@ -8,4 +8,12 @@
 .env.*
 !.env.example
 .DS_Store
-Thumbs.db
+Thumbs.db/uploads/
+/webnangcaon5-current.zip
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+
+/uploads/

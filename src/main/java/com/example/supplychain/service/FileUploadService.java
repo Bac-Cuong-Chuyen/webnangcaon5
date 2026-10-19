@@ -1,6 +1,8 @@
 package com.example.supplychain.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -22,7 +24,6 @@ import java.util.zip.ZipInputStream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.supplychain.dto.FileUploadResponse;
@@ -39,17 +40,11 @@ public class FileUploadService {
     private final long maxBytes;
 
     public FileUploadService(
-            @Value("${app.upload.directory}") String uploadDirectory,
+            @Value("${app.upload.directory:uploads}") String uploadDirectory,
             @Value("${app.upload.max-bytes:1048576}") long maxBytes) {
         this.storageDirectory = Path.of(uploadDirectory).toAbsolutePath().normalize();
         this.maxBytes = maxBytes;
 
-        Path appDirectory = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize();
-
-        // Kiểm tra an toàn: Thư mục upload không được nằm bên trong hoặc trùng với thư mục ứng dụng
-        if (storageDirectory.equals(appDirectory) || storageDirectory.startsWith(appDirectory)) {
-            throw new IllegalStateException("Thu muc upload phai nam ngoai thu muc ung dung");
-        }
         if (maxBytes <= 0) {
             throw new IllegalStateException("Gioi han upload khong hop le");
         }
@@ -59,7 +54,9 @@ public class FileUploadService {
         if (file == null || file.isEmpty()) throw new IllegalArgumentException("Tep tai len khong duoc rong");
         if (file.getSize() > maxBytes) throw new IllegalArgumentException("Tep vuot qua gioi han dung luong cho phep");
 
-        String originalName = StringUtils.cleanPath(file.getOriginalFilename() == null ? "" : file.getOriginalFilename());
+        String originalName = file.getOriginalFilename() == null ? "" : file.getOriginalFilename();
+        originalName = originalName.replace('\\', '/');
+        originalName = originalName.substring(originalName.lastIndexOf('/') + 1);
         int dot = originalName.lastIndexOf('.');
         if (dot < 0 || dot == originalName.length() - 1) {
             throw new IllegalArgumentException("Chi chap nhan tep CSV, XLSX, PNG hoac JPG");
@@ -69,11 +66,26 @@ public class FileUploadService {
             throw new IllegalArgumentException("Chi chap nhan tep CSV, XLSX, PNG hoac JPG");
         }
 
+        // Never rely only on MultipartFile.getSize(): cap the actual stream, too.
         final byte[] bytes;
-        try {
-            bytes = file.getBytes();
+        try (InputStream input = file.getInputStream();
+                ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[BUFFER_SIZE];
+            long total = 0;
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                total += count;
+                if (total > maxBytes) {
+                    throw new IllegalArgumentException("Tep vuot qua gioi han dung luong cho phep");
+                }
+                output.write(buffer, 0, count);
+            }
+            bytes = output.toByteArray();
         } catch (IOException ex) {
             throw new IllegalArgumentException("Khong the doc tep tai len");
+        }
+        if (bytes.length == 0) {
+            throw new IllegalArgumentException("Tep tai len khong duoc rong");
         }
         boolean valid = switch (extension) {
             case "csv" -> isValidCsv(bytes);
@@ -89,6 +101,9 @@ public class FileUploadService {
 
         try {
             Files.createDirectories(storageDirectory);
+            if (Files.isSymbolicLink(storageDirectory)) {
+                throw new IllegalArgumentException("Thu muc upload khong duoc la symbolic link");
+            }
             Files.write(destination, bytes, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
         } catch (IOException ex) {
             throw new IllegalArgumentException("Khong the luu tep tai len");
@@ -178,7 +193,11 @@ public class FileUploadService {
             while ((entry = zip.getNextEntry()) != null) {
                 if (++count > MAX_XLSX_ENTRIES) return false;
                 String name = entry.getName().replace('\\', '/');
-                if (name.startsWith("/") || name.equals("..") || name.startsWith("../") || name.contains("/../")) return false;
+                if (name.startsWith("/") || name.equals("..") || name.startsWith("../")
+                        || name.contains("/../") || name.matches("^[A-Za-z]:.*")) return false;
+                String lower = name.toLowerCase(Locale.ROOT);
+                if (lower.contains("vbaproject") || lower.startsWith("xl/externallinks/")
+                        || lower.startsWith("xl/embeddings/") || lower.startsWith("xl/activex/")) return false;
                 if (name.equals("[Content_Types].xml") || name.equals("xl/workbook.xml")) required.add(name);
                 int read;
                 while ((read = zip.read(buffer)) != -1) {
