@@ -1,4 +1,7 @@
 package com.example.supplychain.service;
+import org.springframework.transaction.annotation.Transactional;
+import com.example.supplychain.util.PageLimits;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -53,5 +56,10 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         productRepository.delete(existingProduct);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<Product> getPage(int page, int size) {
+        return productRepository.findAll(PageLimits.of(page, size));
     }
 }

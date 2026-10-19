@@ -1,4 +1,6 @@
 package com.example.supplychain.controller;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.example.supplychain.util.PageLimits;
 
 import java.util.List;
 import java.util.Map;
@@ -40,11 +42,13 @@ public class UserAccountController {
 
     @GetMapping
     @Transactional(readOnly = true)
-    public ResponseEntity<List<Map<String, Object>>> getAll() {
-        List<Map<String, Object>> response = userAccountRepository.findAll().stream()
-                .map(UserAccountController::safeAccount)
-                .toList();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<List<Map<String, Object>>> getAll(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
+        var result = userAccountRepository.findAll(PageLimits.of(page, size));
+        List<Map<String, Object>> response = result.getContent().stream()
+                .map(UserAccountController::safeAccount).toList();
+        return PageLimits.response(result, response);
     }
 
     @GetMapping("/{id}")

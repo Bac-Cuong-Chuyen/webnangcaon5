@@ -1,4 +1,7 @@
 package com.example.supplychain.service;
+import org.springframework.data.domain.SliceImpl;
+import com.example.supplychain.util.PageLimits;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -53,5 +56,17 @@ public class ImportReceiptService {
     }
     private ImportReceipt load(Long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<ImportReceipt> getPage(int page, int size) {
+        var paging = PageLimits.of(page, size);
+        String username = ReceiptAccess.actor();
+        boolean readAll = ReceiptAccess.role("ADMIN") || ReceiptAccess.role("WAREHOUSE_MANAGER")
+                || ReceiptAccess.role("DIRECTOR");
+        if (!readAll && !ReceiptAccess.role("WAREHOUSE_STAFF")) {
+            return new SliceImpl<>(List.of(), paging, false);
+        }
+        return repository.findReadablePage(readAll, username, paging);
     }
 }
