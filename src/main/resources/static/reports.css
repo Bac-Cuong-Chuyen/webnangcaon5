@@ -33,3 +33,20 @@ th.n,td.n{text-align:right}
 .login-intro{margin-top:0}
 .demo-option{margin-top:10px}
 .report-table{margin-top:12px}
+
+/* B09: keyboard focus, bounded charts and narrow screens. */
+html{color-scheme:light dark}
+.skip-link{position:absolute;left:12px;top:-100px;z-index:10;padding:10px;background:var(--card);color:var(--tx);border:2px solid var(--ac)}
+.skip-link:focus{top:10px}
+a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--ac2);outline-offset:3px}
+button,input[type=text],input[type=password],input[type=date]{min-height:44px}
+input[type=checkbox]{width:20px;height:20px;vertical-align:middle;accent-color:var(--ac)}
+.demo-option{display:flex;align-items:center;gap:8px;min-height:44px}
+#userBox{display:flex;align-items:center;flex-wrap:wrap;gap:8px;overflow-wrap:anywhere;min-width:0}
+.pager{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:14px}
+.chart{height:440px;max-width:100%}
+caption{text-align:left;font-weight:600;margin:8px 0}
+.grid>*{min-width:0}
+#reportPanel{scroll-margin-top:12px}
+@media(max-width:480px){main{padding:12px}.card{padding:12px}.grid{grid-template-columns:minmax(0,1fr)}.tabs button{flex:1 1 100%}.sum{gap:16px}.pager{gap:8px}.chart{height:480px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
