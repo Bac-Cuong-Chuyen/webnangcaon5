@@ -1,0 +1,6 @@
+﻿"Endpoint","Samples","MedianMs","MinMs","MaxMs","Url"
+"E1_ProductSearch","50","15.586","12.074","28.971","http://localhost:8081/api/products/search?keyword=B09&page=0&size=20&sortBy=id&direction=asc"
+"E2_ImportReport","50","141.349","110.530","182.816","http://localhost:8081/api/reports/imports?fromDate=2026-10-01&toDate=2026-10-15"
+"E3_ExportReport","50","125.727","101.475","179.794","http://localhost:8081/api/reports/exports?fromDate=2026-10-01&toDate=2026-10-15"
+"E4_TransferReport","50","13.182","7.112","24.863","http://localhost:8081/api/reports/transfers?fromDate=2026-10-01&toDate=2026-10-15"
+"E5_ProductDetail","50","14.746","7.202","21.896","http://localhost:8081/api/products/2"
