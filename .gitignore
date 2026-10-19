@@ -17,3 +17,5 @@ Thumbs.db/uploads/
 *.jks
 
 /uploads/
+
+/.local-data/

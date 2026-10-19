@@ -71,6 +71,11 @@ class CatalogTransferRoleMatrixTest {
 
     @BeforeEach
     void stubTransferCreation() {
+        when(products.getPage(anyInt(), anyInt())).thenReturn(
+                new org.springframework.data.domain.SliceImpl<>(java.util.List.of()));
+        when(warehouses.getPage(anyInt(), anyInt())).thenReturn(
+                new org.springframework.data.domain.SliceImpl<>(java.util.List.of()));
+        clearInvocations(products, warehouses);
         when(transfers.createTransfer(any())).thenReturn(new StockTransfer());
         clearInvocations(transfers);
     }
