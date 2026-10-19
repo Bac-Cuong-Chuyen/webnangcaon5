@@ -1,4 +1,7 @@
 package com.example.supplychain.service;
+import org.springframework.data.domain.SliceImpl;
+import com.example.supplychain.util.PageLimits;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,11 @@ public class ImportDetailService {
         return repository.save(detail);
     }
     public List<ImportDetail> getAll() {
-        return repository.findAll().stream()
-            .filter(row -> ReceiptAccess.canRead(parent(row.getReceiptId()).getCreatedBy())).toList();
+        String username = ReceiptAccess.actor();
+        boolean readAll = ReceiptAccess.role("ADMIN")
+            || ReceiptAccess.role("WAREHOUSE_MANAGER") || ReceiptAccess.role("DIRECTOR");
+        if (!readAll && !ReceiptAccess.role("WAREHOUSE_STAFF")) return List.of();
+        return repository.findReadable(readAll, username);
     }
     public ImportDetail getById(Long id) {
         ImportDetail row = load(id);
@@ -61,5 +67,17 @@ public class ImportDetailService {
         ImportReceipt row = receipts.findByIdForUpdate(id)
             .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
         ReceiptAccess.requireEdit(row.getCreatedBy(), row.getStatus());
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<ImportDetail> getPage(int page, int size) {
+        var paging = PageLimits.of(page, size);
+        String username = ReceiptAccess.actor();
+        boolean readAll = ReceiptAccess.role("ADMIN") || ReceiptAccess.role("WAREHOUSE_MANAGER")
+                || ReceiptAccess.role("DIRECTOR");
+        if (!readAll && !ReceiptAccess.role("WAREHOUSE_STAFF")) {
+            return new SliceImpl<>(List.of(), paging, false);
+        }
+        return repository.findReadablePage(readAll, username, paging);
     }
 }

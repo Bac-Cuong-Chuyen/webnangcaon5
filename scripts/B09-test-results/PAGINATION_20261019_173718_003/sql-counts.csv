@@ -1,0 +1,13 @@
+Endpoint,Size,Returned,SqlCount
+products,20,20,2
+products,100,100,2
+inventories,20,20,2
+inventories,100,100,2
+import-receipts,20,20,1
+import-receipts,100,100,1
+export-receipts,20,20,1
+export-receipts,100,100,1
+import-details,20,20,1
+import-details,100,100,1
+export-details,20,20,1
+export-details,100,100,1

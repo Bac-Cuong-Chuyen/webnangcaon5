@@ -1,0 +1,15 @@
+﻿{
+    "Time":  "2026-10-19T17:16:18.6787832+07:00",
+    "BaseUrl":  "http://localhost:8081",
+    "Note":  "Cumulative counters since current app startup. Login and GET stats do not evict the report cache.",
+    "Stats":  {
+                  "cache":  "exportReports",
+                  "generation":  3,
+                  "estimatedSize":  1,
+                  "hitCount":  56,
+                  "missCount":  6,
+                  "loadSuccessCount":  6,
+                  "loadFailureCount":  0,
+                  "evictionCount":  1
+              }
+}

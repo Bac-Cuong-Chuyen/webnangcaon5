@@ -1,0 +1,5 @@
+LOCAL B09 index application
+SQL SHA256: 2ed758d365328146fc88e6b8968eb8e58552de311f0a838e0128a0b578104ec1
+Backup: F:\Webnangcao\supply-chain-management\.local-data\b09\backup_truoc_chi_muc_20261019_164851_427.zip
+Before: {product.count=5001, warehouse.count=3, user_account.count=2, import_receipt.count=5000, import_detail.count=5000, export_receipt.count=5000, export_detail.count=5000, stock_transfer.count=5000, transfer_detail.count=5000, inventory.count=10000, import_detail.totalQuantity=500000, export_detail.totalQuantity=100000, transfer_detail.totalQuantity=50000, inventory.totalQuantity=400000}
+After: {product.count=5001, warehouse.count=3, user_account.count=2, import_receipt.count=5000, import_detail.count=5000, export_receipt.count=5000, export_detail.count=5000, stock_transfer.count=5000, transfer_detail.count=5000, inventory.count=10000, import_detail.totalQuantity=500000, export_detail.totalQuantity=100000, transfer_detail.totalQuantity=50000, inventory.totalQuantity=400000}

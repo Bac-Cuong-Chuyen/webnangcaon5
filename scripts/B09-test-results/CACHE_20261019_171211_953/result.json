@@ -1,0 +1,11 @@
+﻿{
+    "Status":  "complete",
+    "BaseUrl":  "http://localhost:8081",
+    "CompletedAt":  "2026-10-19T17:12:35.4138356+07:00",
+    "Checks":  7,
+    "ProductId":  2,
+    "OriginalReportHash":  "2d441cdcdd64386b076e92616778138de1e2f05be5e3b754593ea637c663c816",
+    "RestoredReportHash":  "2d441cdcdd64386b076e92616778138de1e2f05be5e3b754593ea637c663c816",
+    "DataRestored":  true,
+    "TtlExpiryTested":  false
+}

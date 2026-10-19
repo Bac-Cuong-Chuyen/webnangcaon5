@@ -1,4 +1,6 @@
 package com.example.supplychain.controller;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.example.supplychain.util.PageLimits;
 
 import java.util.List;
 
@@ -30,10 +32,10 @@ public class ExportDetailController {
 
     // READ ALL
     @GetMapping
-    public ResponseEntity<List<ExportDetail>> getAll() {
-
-        return ResponseEntity.ok(
-                exportDetailService.getAll());
+    public ResponseEntity<List<ExportDetail>> getAll(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
+        return PageLimits.response(exportDetailService.getPage(page, size));
     }
 
     // READ BY ID
