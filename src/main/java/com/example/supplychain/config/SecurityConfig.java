@@ -4,6 +4,7 @@ import com.example.supplychain.entity.UserAccount;
 import com.example.supplychain.repository.UserAccountRepository;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -90,6 +91,37 @@ public class SecurityConfig {
                         .requestMatchers("/api/audit-logs", "/api/audit-logs/**")
                                 .hasRole("ADMIN")
                         .requestMatchers("/api/files/**")
+                                .hasAnyRole("ADMIN", "WAREHOUSE_MANAGER", "WAREHOUSE_STAFF")
+                        .requestMatchers("/api/reports", "/api/reports/**")
+                                .hasAnyRole("WAREHOUSE_MANAGER", "DIRECTOR")
+                        .requestMatchers("/api/transfers", "/api/transfers/**")
+                                .hasRole("WAREHOUSE_MANAGER")
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/products", "/api/products/**",
+                                "/api/warehouses", "/api/warehouses/**")
+                                .authenticated()
+                        .requestMatchers(HttpMethod.HEAD,
+                                "/api/products", "/api/products/**",
+                                "/api/warehouses", "/api/warehouses/**")
+                                .authenticated()
+                        .requestMatchers(
+                                "/api/products", "/api/products/**",
+                                "/api/warehouses", "/api/warehouses/**")
+                                .hasAnyRole("ADMIN", "WAREHOUSE_MANAGER")
+                        .requestMatchers("/api/import", "/api/import/**", "/api/imports", "/api/imports/**",
+                                "/api/exports", "/api/exports/**")
+                                .hasRole("WAREHOUSE_MANAGER")
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/import-receipts", "/api/import-receipts/**",
+                                "/api/export-receipts", "/api/export-receipts/**",
+                                "/api/import-details", "/api/import-details/**",
+                                "/api/export-details", "/api/export-details/**")
+                                .authenticated()
+                        .requestMatchers(
+                                "/api/import-receipts", "/api/import-receipts/**",
+                                "/api/export-receipts", "/api/export-receipts/**",
+                                "/api/import-details", "/api/import-details/**",
+                                "/api/export-details", "/api/export-details/**")
                                 .hasAnyRole("ADMIN", "WAREHOUSE_MANAGER", "WAREHOUSE_STAFF")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()

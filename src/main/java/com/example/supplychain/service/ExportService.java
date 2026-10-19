@@ -42,6 +42,7 @@ public class ExportService {
 
     @Transactional
     public String createExport(ExportRequest request) {
+        ReceiptAccess.requireManager();
 
         // BR-01: Số lượng xuất phải > 0
         if (request.getQuantity() == null ||
@@ -89,6 +90,7 @@ public class ExportService {
         receipt.setReceiptCode(request.getReceiptCode());
         receipt.setReceiptDate(LocalDate.now());
         receipt.setStatus("COMPLETED");
+        receipt.setCreatedBy(ReceiptAccess.actor());
 
         ExportReceipt savedReceipt =
                 exportReceiptRepository.save(receipt);
@@ -111,4 +113,3 @@ public class ExportService {
                 + "Tồn kho còn lại: " + inventory.getQuantity();
     }
 }
-

@@ -50,6 +50,7 @@ public class ImportService {
 
     @Transactional
     public String processImport(ImportRequest request) {
+        ReceiptAccess.requireManager();
 
         if (request.getQuantity() == null || request.getQuantity() <= 0) {
             throw new IllegalArgumentException(
@@ -83,6 +84,7 @@ public class ImportService {
         receipt.setReceiptCode(request.getReceiptCode());
         receipt.setReceiptDate(LocalDate.now());
         receipt.setStatus("COMPLETED");
+        receipt.setCreatedBy(ReceiptAccess.actor());
 
         ImportReceipt savedReceipt = importReceiptRepository.save(receipt);
 

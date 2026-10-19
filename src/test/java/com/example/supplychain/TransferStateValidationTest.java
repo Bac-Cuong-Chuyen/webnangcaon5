@@ -28,7 +28,7 @@ import com.example.supplychain.repository.WarehouseRepository;
 })
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser(roles = "WAREHOUSE_STAFF")
+@WithMockUser(roles = "WAREHOUSE_MANAGER")
 class TransferStateValidationTest {
 
     @Autowired

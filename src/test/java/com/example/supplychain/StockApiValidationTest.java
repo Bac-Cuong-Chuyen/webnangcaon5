@@ -33,7 +33,7 @@ import com.example.supplychain.repository.WarehouseRepository;
 })
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser(roles = "WAREHOUSE_STAFF")
+@WithMockUser(roles = "WAREHOUSE_MANAGER")
 class StockApiValidationTest {
 
     private static final long MISSING_ID = 999_999L;
