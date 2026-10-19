@@ -1,5 +1,6 @@
 package com.example.supplychain;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,7 +28,7 @@ import com.example.supplychain.repository.WarehouseRepository;
 })
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser(roles = "WAREHOUSE_STAFF")
+@WithMockUser(roles = "WAREHOUSE_MANAGER")
 class TransferStateValidationTest {
 
     @Autowired
@@ -41,13 +42,14 @@ class TransferStateValidationTest {
 
     @ParameterizedTest
     @CsvSource({
-        "COMPLETED, complete",
-        "COMPLETED, cancel",
-        "CANCELLED, complete",
-        "CANCELLED, cancel"
+            "COMPLETED, complete",
+            "COMPLETED, cancel",
+            "CANCELLED, complete",
+            "CANCELLED, cancel"
     })
     void rejectInvalidTransition(
-            String initialStatus, String action) throws Exception {
+            String initialStatus,
+            String action) throws Exception {
 
         Warehouse source = createWarehouse("B06-STATE-SRC");
         Warehouse target = createWarehouse("B06-STATE-DST");
@@ -64,7 +66,9 @@ class TransferStateValidationTest {
         mvc.perform(post(
                         "/api/transfers/{id}/{action}",
                         transfer.getId(),
-                        action))
+                        action
+                )
+                .with(csrf().asHeader()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.code")
                         .value("TRANSFER_BUSINESS_ERROR"));
@@ -75,6 +79,7 @@ class TransferStateValidationTest {
         warehouse.setCode(code);
         warehouse.setName(code);
         warehouse.setAddress("Ha Noi");
+
         return warehouseRepository.saveAndFlush(warehouse);
     }
 }

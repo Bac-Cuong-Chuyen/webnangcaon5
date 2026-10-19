@@ -1,6 +1,8 @@
 package com.example.supplychain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +34,7 @@ import com.example.supplychain.repository.WarehouseRepository;
 })
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser(roles = "WAREHOUSE_STAFF")
+@WithMockUser(roles = "WAREHOUSE_MANAGER")
 class StockApiValidationTest {
 
     private static final long MISSING_ID = 999_999L;
@@ -82,10 +84,20 @@ class StockApiValidationTest {
                 """.formatted(product, warehouse, quantity);
 
         return mvc.perform(post(url)
+                .with(csrf().asHeader())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json));
     }
 
+    @Autowired private com.example.supplychain.repository.ImportReceiptRepository importReceipts;
+    @Autowired private com.example.supplychain.repository.ExportReceiptRepository exportReceipts;
+    private ResultActions approveLatest(String url) throws Exception {
+        long id = url.equals("/api/imports")
+            ? importReceipts.findAll().stream().mapToLong(row -> row.getId()).max().orElseThrow()
+            : exportReceipts.findAll().stream().mapToLong(row -> row.getId()).max().orElseThrow();
+        return mvc.perform(post(url+"/"+id+"/approve")
+            .with(user("other-manager").roles("WAREHOUSE_MANAGER")).with(csrf()));
+    }
     private int stock() {
         return inventoryRepository
                 .findByWarehouseIdAndProductId(warehouseId, productId)
@@ -97,6 +109,8 @@ class StockApiValidationTest {
     void tc01_importValid() throws Exception {
         call("/api/imports", productId, warehouseId, 10)
                 .andExpect(status().isOk());
+        assertEquals(0, stock());
+        approveLatest("/api/imports").andExpect(status().isOk());
 
         assertEquals(10, stock());
     }
@@ -105,9 +119,13 @@ class StockApiValidationTest {
     void tc02_exportValid() throws Exception {
         call("/api/imports", productId, warehouseId, 10)
                 .andExpect(status().isOk());
+        assertEquals(0, stock());
+        approveLatest("/api/imports").andExpect(status().isOk());
 
         call("/api/exports", productId, warehouseId, 5)
                 .andExpect(status().isOk());
+        assertEquals(10, stock());
+        approveLatest("/api/exports").andExpect(status().isOk());
 
         assertEquals(5, stock());
     }
@@ -148,8 +166,12 @@ class StockApiValidationTest {
     void tc07_exportExceedsStock() throws Exception {
         call("/api/imports", productId, warehouseId, 10)
                 .andExpect(status().isOk());
+        assertEquals(0, stock());
+        approveLatest("/api/imports").andExpect(status().isOk());
 
         call("/api/exports", productId, warehouseId, 1_000_000)
+                .andExpect(status().isOk());
+        approveLatest("/api/exports")
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code")
                         .value("BUSINESS_CONFLICT"));

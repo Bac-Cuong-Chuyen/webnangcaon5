@@ -17,8 +17,11 @@ public class ImportController {
 
     private final ImportService importService;
 
-    public ImportController(ImportService importService) {
+    private final com.example.supplychain.service.ReceiptApprovalService approvalService;
+    public ImportController(ImportService importService,
+            com.example.supplychain.service.ReceiptApprovalService approvalService) {
         this.importService = importService;
+        this.approvalService = approvalService;
     }
 
     @PostMapping
@@ -26,5 +29,11 @@ public class ImportController {
             @Valid @RequestBody ImportRequest request) {
 
         return ResponseEntity.ok(importService.createImport(request));
+    }
+
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<com.example.supplychain.entity.ImportReceipt> approve(
+            @org.springframework.web.bind.annotation.PathVariable("id") Long id) {
+        return ResponseEntity.ok(approvalService.approveImport(id));
     }
 }

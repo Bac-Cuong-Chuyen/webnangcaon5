@@ -17,8 +17,11 @@ public class ExportController {
 
     private final ExportService exportService;
 
-    public ExportController(ExportService exportService) {
+    private final com.example.supplychain.service.ReceiptApprovalService approvalService;
+    public ExportController(ExportService exportService,
+            com.example.supplychain.service.ReceiptApprovalService approvalService) {
         this.exportService = exportService;
+        this.approvalService = approvalService;
     }
 
     // Lỗi validation/nghiệp vụ do GlobalExceptionHandler xử lý tập trung
@@ -27,5 +30,11 @@ public class ExportController {
             @Valid @RequestBody ExportRequest request) {
 
         return ResponseEntity.ok(exportService.createExport(request));
+    }
+
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<com.example.supplychain.entity.ExportReceipt> approve(
+            @org.springframework.web.bind.annotation.PathVariable("id") Long id) {
+        return ResponseEntity.ok(approvalService.approveExport(id));
     }
 }

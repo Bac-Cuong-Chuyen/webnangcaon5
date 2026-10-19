@@ -1,56 +1,65 @@
 package com.example.supplychain.service;
 
 import java.util.List;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.example.supplychain.entity.ExportDetail;
+import com.example.supplychain.entity.ExportReceipt;
 import com.example.supplychain.repository.ExportDetailRepository;
+import com.example.supplychain.repository.ExportReceiptRepository;
+import com.example.supplychain.exception.ResourceNotFoundException;
 
 @Service
+@Transactional(readOnly = true)
 public class ExportDetailService {
-
-    private final ExportDetailRepository exportDetailRepository;
-
-    public ExportDetailService(
-            ExportDetailRepository exportDetailRepository) {
-        this.exportDetailRepository = exportDetailRepository;
+    private final ExportDetailRepository repository;
+    private final ExportReceiptRepository receipts;
+    public ExportDetailService(ExportDetailRepository repository, ExportReceiptRepository receipts) {
+        this.repository = repository;
+        this.receipts = receipts;
     }
-
-    // CREATE
+    @Transactional
     public ExportDetail create(ExportDetail detail) {
-        return exportDetailRepository.save(detail);
+        writable(detail.getReceiptId());
+        detail.setId(null);
+        return repository.save(detail);
     }
-
-    // READ ALL
     public List<ExportDetail> getAll() {
-        return exportDetailRepository.findAll();
+        return repository.findAll().stream()
+            .filter(row -> ReceiptAccess.canRead(parent(row.getReceiptId()).getCreatedBy())).toList();
     }
-
-    // READ BY ID
     public ExportDetail getById(Long id) {
-        return exportDetailRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Không tìm thấy chi tiết phiếu xuất với id: " + id));
+        ExportDetail row = load(id);
+        ReceiptAccess.requireRead(parent(row.getReceiptId()).getCreatedBy());
+        return row;
     }
-
-    // UPDATE
-    public ExportDetail update(Long id, ExportDetail detail) {
-        ExportDetail existing = getById(id);
-
-        existing.setReceiptId(detail.getReceiptId());
-        existing.setProductId(detail.getProductId());
-        existing.setQuantity(detail.getQuantity());
-
-        return exportDetailRepository.save(existing);
+    @Transactional
+    public ExportDetail update(Long id, ExportDetail request) {
+        ExportDetail row = load(id);
+        writable(row.getReceiptId());
+        writable(request.getReceiptId());
+        row.setReceiptId(request.getReceiptId());
+        row.setProductId(request.getProductId());
+        row.setQuantity(request.getQuantity());
+        return repository.save(row);
     }
-
-    // DELETE
+    @Transactional
     public void delete(Long id) {
-        ExportDetail existing = getById(id);
-        exportDetailRepository.delete(existing);
+        ExportDetail row = load(id);
+        writable(row.getReceiptId());
+        repository.delete(row);
+    }
+    private ExportDetail load(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Khong tim thay chi tiet phieu"));
+    }
+    private ExportReceipt parent(Long id) {
+        if (id == null) throw new IllegalArgumentException("receiptId la bat buoc");
+        return receipts.findById(id).orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
+    }
+    private void writable(Long id) {
+        if (id == null) throw new IllegalArgumentException("receiptId la bat buoc");
+        ExportReceipt row = receipts.findByIdForUpdate(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
+        ReceiptAccess.requireEdit(row.getCreatedBy(), row.getStatus());
     }
 }
