@@ -1,0 +1,94 @@
+﻿{
+    "Phase":  "before",
+    "Status":  "complete",
+    "BaseUrl":  "http://localhost:8081",
+    "Username":  "b09_manager",
+    "Role":  "WAREHOUSE_MANAGER",
+    "StartedAt":  "2026-10-19T16:42:03.6111431+07:00",
+    "GitHead":  "c133bb2a04fd624498f5aa8a0ebe4021e240a6d3",
+    "GitStatus":  [
+                      "## feature/b09-performance",
+                      " M .gitignore",
+                      " M ErrorResponse.java",
+                      " M GlobalExceptionHandler.java",
+                      "?? database/b09-seed-reports.sql",
+                      "?? database/b09-seed.sql",
+                      "?? docs/PHAN_CONG_BUOI_07.docx",
+                      "?? scripts/B06-test-results/B06_SAME_38ac52324e/",
+                      "?? scripts/B09-do-hieu-nang.ps1",
+                      "?? scripts/B09-khoi-phuc-admin-local.ps1",
+                      "?? scripts/B09KhoiPhucAdmin.java",
+                      "?? src/main/resources/application-b09.properties"
+                  ],
+    "PowerShellVersion":  "5.1.26100.9711",
+    "ComputerName":  "LAPTOP-371IIJBU",
+    "SamplesPerEndpoint":  50,
+    "WarmupsPerEndpoint":  5,
+    "Measurement":  "Sequential Invoke-WebRequest, buffered response; Stopwatch; JSON/hash validation outside timer",
+    "CacheState":  "5 warmups per endpoint; after with cache measures warmed cache, not cold miss",
+    "ProductCountB09":  5000,
+    "ReportChecks":  [
+                         {
+                             "Name":  "imports",
+                             "TotalRows":  5000,
+                             "TotalQuantity":  500000
+                         },
+                         {
+                             "Name":  "exports",
+                             "TotalRows":  5000,
+                             "TotalQuantity":  100000
+                         },
+                         {
+                             "Name":  "transfers",
+                             "TotalRows":  1,
+                             "TotalQuantity":  50000
+                         }
+                     ],
+    "BaselineDirectory":  "",
+    "Endpoints":  [
+                      {
+                          "Name":  "E1_ProductSearch",
+                          "Path":  "/api/products/search?keyword=B09\u0026page=0\u0026size=20\u0026sortBy=id\u0026direction=asc",
+                          "ExpectedHash":  "24ceef38815f3d3e526edd362f98510dfb8e486f88ccc73e20d43c33a39c6591"
+                      },
+                      {
+                          "Name":  "E2_ImportReport",
+                          "Path":  "/api/reports/imports?fromDate=2026-10-01\u0026toDate=2026-10-15",
+                          "ExpectedHash":  "081f3b6d5977ecf56a94f711c95a1bdfa4d9fe10acf9bc04197f496fbfe85457"
+                      },
+                      {
+                          "Name":  "E3_ExportReport",
+                          "Path":  "/api/reports/exports?fromDate=2026-10-01\u0026toDate=2026-10-15",
+                          "ExpectedHash":  "2d441cdcdd64386b076e92616778138de1e2f05be5e3b754593ea637c663c816"
+                      },
+                      {
+                          "Name":  "E4_TransferReport",
+                          "Path":  "/api/reports/transfers?fromDate=2026-10-01\u0026toDate=2026-10-15",
+                          "ExpectedHash":  "29a3fab0cde198b19bdbd124766a0dc4507a747c751d2113a77f5ebb85ec4486"
+                      },
+                      {
+                          "Name":  "E5_ProductDetail",
+                          "Path":  "/api/products/2",
+                          "ExpectedHash":  "a797007d3df604729f365d04685b1bf64f5774970dadd00fcd8a471e5102563e"
+                      }
+                  ],
+    "ConfigurationHashes":  [
+                                {
+                                    "Path":  "src/main/resources/application.properties",
+                                    "SHA256":  "F2EA13F7A4C3402E48944DAAACF7CC3E25AAD7E7FA888D958F105B92E62E432F"
+                                },
+                                {
+                                    "Path":  "src/main/resources/application-b09.properties",
+                                    "SHA256":  "EFE946EF6C4F770CE35B5AD975D02F64BB62307A5A409F15C0F2D89D660BDDEF"
+                                },
+                                {
+                                    "Path":  "database/b09-seed.sql",
+                                    "SHA256":  "DF08C7C95FCC6B87593B0D4CC34B4F5F24F15E1B14F5A6093F89D04CCD4C42B1"
+                                },
+                                {
+                                    "Path":  "database/b09-seed-reports.sql",
+                                    "SHA256":  "1A3DAC7BF17B5FC3537353F3AAF034361CBA60DE37E117BC383BFD0BD9E32B15"
+                                }
+                            ],
+    "CompletedAt":  "2026-10-19T16:42:25.4865205+07:00"
+}

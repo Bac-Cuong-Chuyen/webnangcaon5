@@ -1,0 +1,6 @@
+﻿"Endpoint","BeforeMs","AfterMs","ImprovementPercent"
+"E1_ProductSearch","18.193","15.586","14.33"
+"E2_ImportReport","123.246","141.349","-14.69"
+"E3_ExportReport","133.939","125.727","6.13"
+"E4_TransferReport","11.562","13.182","-14.01"
+"E5_ProductDetail","12.067","14.746","-22.2"
