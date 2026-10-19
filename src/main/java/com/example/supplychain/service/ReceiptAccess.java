@@ -42,6 +42,12 @@ final class ReceiptAccess {
             throw new AccessDeniedException("Receipt delete denied");
         requireEdit(owner, status);
     }
+    static void requireDifferentApprover(String creator) {
+        if (creator == null || creator.isBlank())
+            throw new BusinessConflictException("Phieu chua co nguoi tao de doi chieu");
+        if (actor().equals(creator))
+            throw new BusinessConflictException("Nguoi tao khong duoc tu duyet phieu");
+    }
     static void requireManager() {
         if (!role("WAREHOUSE_MANAGER")) throw new AccessDeniedException("Manager required");
     }
