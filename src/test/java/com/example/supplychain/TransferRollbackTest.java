@@ -35,6 +35,7 @@ import com.example.supplychain.service.TransferService;
         "spring.datasource.url=jdbc:h2:mem:transfer_rollback_test;DB_CLOSE_DELAY=-1",
         "spring.jpa.hibernate.ddl-auto=create-drop"
 })
+@org.springframework.security.test.context.support.WithMockUser(username = "creator", roles = "WAREHOUSE_MANAGER")
 class TransferRollbackTest {
 
     @Autowired
@@ -107,6 +108,9 @@ class TransferRollbackTest {
         StockTransfer transfer =
                 transferService.createTransfer(request);
 
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
+            new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                "other-manager", null, java.util.List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_WAREHOUSE_MANAGER"))));
         assertEquals(10, quantity(sourceId, productId));
         assertEquals(0, quantity(targetId, productId));
 

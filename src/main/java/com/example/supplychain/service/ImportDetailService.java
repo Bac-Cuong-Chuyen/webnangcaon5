@@ -1,56 +1,65 @@
 package com.example.supplychain.service;
 
 import java.util.List;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.example.supplychain.entity.ImportDetail;
+import com.example.supplychain.entity.ImportReceipt;
 import com.example.supplychain.repository.ImportDetailRepository;
+import com.example.supplychain.repository.ImportReceiptRepository;
+import com.example.supplychain.exception.ResourceNotFoundException;
 
 @Service
+@Transactional(readOnly = true)
 public class ImportDetailService {
-
-    private final ImportDetailRepository importDetailRepository;
-
-    public ImportDetailService(
-            ImportDetailRepository importDetailRepository) {
-        this.importDetailRepository = importDetailRepository;
+    private final ImportDetailRepository repository;
+    private final ImportReceiptRepository receipts;
+    public ImportDetailService(ImportDetailRepository repository, ImportReceiptRepository receipts) {
+        this.repository = repository;
+        this.receipts = receipts;
     }
-
-    // CREATE
+    @Transactional
     public ImportDetail create(ImportDetail detail) {
-        return importDetailRepository.save(detail);
+        writable(detail.getReceiptId());
+        detail.setId(null);
+        return repository.save(detail);
     }
-
-    // READ ALL
     public List<ImportDetail> getAll() {
-        return importDetailRepository.findAll();
+        return repository.findAll().stream()
+            .filter(row -> ReceiptAccess.canRead(parent(row.getReceiptId()).getCreatedBy())).toList();
     }
-
-    // READ BY ID
     public ImportDetail getById(Long id) {
-        return importDetailRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Không tìm thấy chi tiết phiếu nhập với id: " + id));
+        ImportDetail row = load(id);
+        ReceiptAccess.requireRead(parent(row.getReceiptId()).getCreatedBy());
+        return row;
     }
-
-    // UPDATE
-    public ImportDetail update(Long id, ImportDetail detail) {
-        ImportDetail existing = getById(id);
-
-        existing.setReceiptId(detail.getReceiptId());
-        existing.setProductId(detail.getProductId());
-        existing.setQuantity(detail.getQuantity());
-
-        return importDetailRepository.save(existing);
+    @Transactional
+    public ImportDetail update(Long id, ImportDetail request) {
+        ImportDetail row = load(id);
+        writable(row.getReceiptId());
+        writable(request.getReceiptId());
+        row.setReceiptId(request.getReceiptId());
+        row.setProductId(request.getProductId());
+        row.setQuantity(request.getQuantity());
+        return repository.save(row);
     }
-
-    // DELETE
+    @Transactional
     public void delete(Long id) {
-        ImportDetail existing = getById(id);
-        importDetailRepository.delete(existing);
+        ImportDetail row = load(id);
+        writable(row.getReceiptId());
+        repository.delete(row);
+    }
+    private ImportDetail load(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Khong tim thay chi tiet phieu"));
+    }
+    private ImportReceipt parent(Long id) {
+        if (id == null) throw new IllegalArgumentException("receiptId la bat buoc");
+        return receipts.findById(id).orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
+    }
+    private void writable(Long id) {
+        if (id == null) throw new IllegalArgumentException("receiptId la bat buoc");
+        ImportReceipt row = receipts.findByIdForUpdate(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
+        ReceiptAccess.requireEdit(row.getCreatedBy(), row.getStatus());
     }
 }

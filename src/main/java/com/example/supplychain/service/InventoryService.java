@@ -35,11 +35,15 @@ public class InventoryService {
 
     // UPDATE
     public Inventory update(Long id, Inventory inventory) {
+        ReceiptAccess.requireManager();
         Inventory existing = getById(id);
 
-        existing.setWarehouseId(inventory.getWarehouseId());
-        existing.setProductId(inventory.getProductId());
-        existing.setQuantity(inventory.getQuantity());
+        if ((inventory.getWarehouseId() != null && !inventory.getWarehouseId().equals(existing.getWarehouseId()))
+                || (inventory.getProductId() != null && !inventory.getProductId().equals(existing.getProductId()))
+                || (inventory.getQuantity() != null && !inventory.getQuantity().equals(existing.getQuantity())))
+            throw new org.springframework.security.access.AccessDeniedException("Ton kho chi thay doi qua nghiep vu da duyet");
+        if (inventory.getMinimumQuantity() == null || inventory.getMinimumQuantity() < 0)
+            throw new IllegalArgumentException("Nguong ton kho phai >= 0");
         existing.setMinimumQuantity(inventory.getMinimumQuantity());
 
         return inventoryRepository.save(existing);
