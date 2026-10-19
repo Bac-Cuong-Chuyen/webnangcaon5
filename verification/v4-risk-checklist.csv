@@ -1,0 +1,13 @@
+Risk,Description,SourceToReview,AutomatedEvidence,ManualVerificationStatus
+BM1,SQL injection,ProductController and ProductSearchService,SecurityHardeningTest.tc25,Needs manual verification of every query
+BM2,Stored XSS,static/audit-logs.html,HTML uses textContent,Needs browser verification
+BM3,CSRF,SecurityConfig,SecurityHardeningTest.tc21,Verify from browser session
+BM4,IDOR / object authorization,UserController and UserAccountController,SecurityHardeningTest.tc24,Verify all other business resources
+BM5,Broken function-level access,SecurityConfig,SecurityHardeningTest.tc24,Verify each API role boundary
+BM6,Plaintext password,AuthController and AuthService,SecurityHardeningTest.tc22,Check old database data and history
+BM7,Session fixation and logout,AuthController,SecurityHardeningTest.tc22,Verify deployed session cookies
+BM8,Unsafe file upload,FileUploadService,SecurityHardeningTest.tc16-19 and FileUploadHardeningTest,Verify deployed file storage
+BM9,Internal detail exposure,GlobalExceptionHandler,SecurityHardeningTest.tc25,Verify production error handler
+BM10,Password brute force,LoginAttemptService and AuthController,SecurityHardeningTest.tc23,Verify deployment behaviour
+BM11,Repository secret leak,.gitignore and Git history,No automated proof,Scan entire git history manually
+BM12,Security headers and HTTPS,SecurityConfig,SecurityHardeningTest.tc25,Verify public HTTPS endpoint
