@@ -114,6 +114,14 @@ public class AuthController {
         String username = requestBody.getUsername().trim();
         String attemptKey = username.toLowerCase(java.util.Locale.ROOT);
 
+        // Use the servlet remote address; never parse arbitrary forwarded headers here.
+        String clientIp = request.getRemoteAddr();
+        if (loginAttemptService.isIpBlocked(clientIp)) {
+            auditLogService.record(username, "LOGIN_BLOCKED_IP", "LoginSource:" + clientIp);
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body("Dang nhap tam thoi bi gioi han");
+        }
+
         if (loginAttemptService.isBlocked(attemptKey)) {
 
             auditLogService.record(
@@ -179,6 +187,7 @@ public class AuthController {
         } catch (AuthenticationException ex) {
 
             loginAttemptService.recordFailure(attemptKey);
+            loginAttemptService.recordIpFailure(clientIp);
 
             SecurityContextHolder.clearContext();
 
