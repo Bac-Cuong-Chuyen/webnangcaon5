@@ -1,59 +1,49 @@
 package com.example.supplychain.service;
 
 import java.util.List;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.example.supplychain.entity.ImportReceipt;
 import com.example.supplychain.repository.ImportReceiptRepository;
+import com.example.supplychain.exception.ResourceNotFoundException;
 
 @Service
+@Transactional(readOnly = true)
 public class ImportReceiptService {
+    private final ImportReceiptRepository repository;
+    public ImportReceiptService(ImportReceiptRepository repository) { this.repository = repository; }
 
-    private final ImportReceiptRepository importReceiptRepository;
-
-    public ImportReceiptService(
-            ImportReceiptRepository importReceiptRepository) {
-        this.importReceiptRepository = importReceiptRepository;
-    }
-
-    // CREATE
+    @Transactional
     public ImportReceipt create(ImportReceipt receipt) {
-        return importReceiptRepository.save(receipt);
+        ReceiptAccess.requireCreate();
+        receipt.setId(null);
+        receipt.setCreatedBy(ReceiptAccess.actor());
+        receipt.setStatus("DRAFT");
+        return repository.save(receipt);
     }
-
-    // READ ALL
     public List<ImportReceipt> getAll() {
-        return importReceiptRepository.findAll();
+        return repository.findAll().stream().filter(row -> ReceiptAccess.canRead(row.getCreatedBy())).toList();
     }
-
-    // READ BY ID
     public ImportReceipt getById(Long id) {
-        return importReceiptRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Không tìm thấy phiếu nhập với id: " + id));
+        ImportReceipt row = load(id);
+        ReceiptAccess.requireRead(row.getCreatedBy());
+        return row;
     }
-
-    // UPDATE
-    public ImportReceipt update(
-            Long id,
-            ImportReceipt receipt) {
-
-        ImportReceipt existing = getById(id);
-
-        existing.setReceiptCode(receipt.getReceiptCode());
-        existing.setReceiptDate(receipt.getReceiptDate());
-        existing.setStatus(receipt.getStatus());
-
-        return importReceiptRepository.save(existing);
+    @Transactional
+    public ImportReceipt update(Long id, ImportReceipt request) {
+        ImportReceipt row = load(id);
+        ReceiptAccess.requireEdit(row.getCreatedBy(), row.getStatus());
+        row.setReceiptCode(request.getReceiptCode());
+        row.setReceiptDate(request.getReceiptDate());
+        return repository.save(row);
     }
-
-    // DELETE
+    @Transactional
     public void delete(Long id) {
-        ImportReceipt existing = getById(id);
-        importReceiptRepository.delete(existing);
+        ImportReceipt row = load(id);
+        ReceiptAccess.requireDelete(row.getCreatedBy(), row.getStatus());
+        repository.delete(row);
+    }
+    private ImportReceipt load(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Khong tim thay phieu"));
     }
 }
