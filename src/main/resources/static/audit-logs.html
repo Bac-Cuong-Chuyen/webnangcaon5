@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
     <title>Tra cứu nhật ký hệ thống</title>
     <link rel="stylesheet" href="/audit-logs.css">
 </head>
@@ -12,6 +13,7 @@
     <p>Tra cứu người thực hiện, hành động, đối tượng và thời điểm.</p>
 
     <section>
+        <h2 class="sr-only">Đăng nhập</h2>
         <form id="loginForm">
             <label>
                 Tài khoản
@@ -28,7 +30,7 @@
             <button type="submit">Đăng nhập</button>
         </form>
 
-        <p id="accountStatus">Chưa đăng nhập tại trang này.</p>
+        <p id="accountStatus" role="status">Chưa đăng nhập tại trang này.</p>
         <button id="logoutButton" type="button">Đăng xuất</button>
     </section>
 
@@ -53,12 +55,14 @@
 
             <label>
                 Từ thời điểm
-                <input id="fromTime" type="datetime-local" step="1">
+                <input id="fromTime" type="datetime-local" step="1"
+                       aria-describedby="message">
             </label>
 
             <label>
                 Đến thời điểm
-                <input id="toTime" type="datetime-local" step="1">
+                <input id="toTime" type="datetime-local" step="1"
+                       aria-describedby="message">
             </label>
 
             <label>
@@ -79,17 +83,20 @@
     </section>
 
     <section>
+        <h2 class="sr-only">Kết quả tra cứu</h2>
         <p id="message" role="status" aria-live="polite"></p>
 
-        <div class="table-wrap">
+        <div class="table-wrap" tabindex="0" role="region"
+             aria-label="Bảng nhật ký hệ thống">
             <table>
+                <caption class="sr-only">Nhật ký hệ thống</caption>
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Người thực hiện</th>
-                    <th>Hành động</th>
-                    <th>Đối tượng</th>
-                    <th>Thời điểm</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Người thực hiện</th>
+                    <th scope="col">Hành động</th>
+                    <th scope="col">Đối tượng</th>
+                    <th scope="col">Thời điểm</th>
                 </tr>
                 </thead>
                 <tbody id="rows"></tbody>
@@ -100,7 +107,7 @@
             <button id="previousButton" type="button" disabled>
                 Trang trước
             </button>
-            <span id="pageInfo">Chưa tải dữ liệu</span>
+            <span id="pageInfo" tabindex="-1">Chưa tải dữ liệu</span>
             <button id="nextButton" type="button" disabled>
                 Trang sau
             </button>

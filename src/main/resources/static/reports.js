@@ -13,7 +13,6 @@ async function secureFetch(url, options={}) {
   return fetch(url,{...options,credentials:'same-origin',headers});
 }
 
-/* Hợp đồng API B07 (Bắc, 16/10/2026): GET ?fromDate&toDate -> {fromDate,toDate,data:[...],totalRows,totalQuantity} */
 const REPORTS = {
   import: { title:'Báo cáo nhập kho', url:'/api/reports/imports', qty:'Số lượng nhập',
     cols:['Ngày','SKU'], keys:['date','sku'], label:r=>r.date+' | '+r.sku },
@@ -22,7 +21,6 @@ const REPORTS = {
   transfer:{ title:'Báo cáo chuyển kho', url:'/api/reports/transfers', qty:'Số lượng chuyển',
     cols:['Mã kho nguồn','Mã kho đích'], keys:['fromWarehouseCode','toWarehouseCode'], label:r=>r.fromWarehouseCode+' → '+r.toWarehouseCode }
 };
-/* JSON mẫu trong tài liệu hợp đồng, chỉ dùng cho chế độ dữ liệu mẫu */
 const DEMO = {
   import:{fromDate:'2026-10-14',toDate:'2026-10-15',totalRows:3,totalQuantity:22,data:[
     {date:'2026-10-14',sku:'B07TEST1',totalQuantity:5},{date:'2026-10-14',sku:'DELL01',totalQuantity:10},{date:'2026-10-15',sku:'DELL01',totalQuantity:7}]},
@@ -37,8 +35,11 @@ let tab='import', rows=[], chart=null, isDemo=false, seq=0;
 
 function fmt(n){ return Number(n).toLocaleString('vi-VN'); }
 function setStatus(msg, cls){ const s=$('status'); s.textContent=msg||''; s.className=cls||''; }
+function markInvalid(ids){
+  ['fFrom','fTo'].forEach(i=>$(i).removeAttribute('aria-invalid'));
+  ids.forEach(i=>$(i).setAttribute('aria-invalid','true'));
+}
 
-/* Xóa kết quả cũ và khóa xuất CSV (lỗi API, đổi tab, đăng xuất) */
 function clearResult(){
   rows=[]; if(chart){chart.destroy();chart=null;}
   $('content').hidden=true; $('mismatch').hidden=true; $('csvBtn').disabled=true;
@@ -47,13 +48,13 @@ function clearResult(){
 function buildTabs(){
   Object.entries(REPORTS).forEach(([k,v])=>{
     const b=document.createElement('button');
-    b.type='button'; b.role='tab'; b.textContent=v.title; b.dataset.k=k;
+    b.type='button'; b.textContent=v.title; b.dataset.k=k;
     b.onclick=()=>{ tab=k; refreshTabs(); clearResult(); load(); };
     $('tabs').appendChild(b);
   });
   refreshTabs();
 }
-function refreshTabs(){ document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected', b.dataset.k===tab)); }
+function refreshTabs(){ document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.k===tab))); }
 
 function showLogin(show){ $('loginCard').hidden=!show; }
 function showUser(u){
@@ -63,18 +64,27 @@ function showUser(u){
   s.textContent=(u.fullName||u.username)+(u.role?' ('+u.role+') ':' ');
   const b=document.createElement('button');
   b.type='button'; b.className='ghost'; b.textContent='Đăng xuất';
-  b.onclick=async()=>{ try{const res=await secureFetch('/api/auth/logout',{method:'POST',credentials:'same-origin'}); if(!res.ok){setStatus('Dang xuat that bai (HTTP '+res.status+').','err');return;}}catch(e){setStatus('Khong ket noi duoc may chu.','err');return;} ++seq;
-    showUser(null); clearResult(); setStatus('Đã đăng xuất.'); showLogin(true); };
+  b.onclick=async()=>{
+    try{
+      const res=await secureFetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});
+      if(!res.ok){setStatus('Đăng xuất thất bại (HTTP '+res.status+').','err');return;}
+    }catch(e){setStatus('Không kết nối được máy chủ.','err');return;}
+    ++seq;
+    showUser(null); clearResult(); setStatus('Đã đăng xuất.'); showLogin(true); $('lu').focus();
+  };
   box.append(s,b);
 }
-$('loginBtn').onclick=async()=>{
+$('loginForm').onsubmit=async e=>{
+  e.preventDefault();
   $('loginErr').textContent='';
   try{
     const res=await secureFetch('/api/auth/login',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({username:$('lu').value,password:$('lp').value})});
     if(!res.ok){ $('loginErr').textContent=(await res.text())||'Đăng nhập thất bại.'; return; }
-    showUser(await res.json()); showLogin(false); $('lp').value=''; load();
-  }catch(e){ $('loginErr').textContent='Không kết nối được máy chủ.'; }
+    showUser(await res.json()); showLogin(false); $('lp').value='';
+    const first=document.querySelector('#tabs button'); if(first) first.focus();
+    load();
+  }catch(err){ $('loginErr').textContent='Không kết nối được máy chủ.'; }
 };
 
 async function load(){
@@ -83,8 +93,9 @@ async function load(){
   isDemo=$('demoChk').checked;
   $('demoBanner').hidden=!isDemo;
   clearResult();
-  if(!from||!to){ setStatus('Chọn đủ ngày bắt đầu và ngày kết thúc.','err'); return; }
-  if(from>to){ setStatus('Ngày bắt đầu không được lớn hơn ngày kết thúc.','err'); return; }
+  markInvalid([]);
+  if(!from||!to){ markInvalid([!from?'fFrom':null,!to?'fTo':null].filter(Boolean)); setStatus('Chọn đủ ngày bắt đầu và ngày kết thúc.','err'); return; }
+  if(from>to){ markInvalid(['fFrom','fTo']); setStatus('Ngày bắt đầu không được lớn hơn ngày kết thúc.','err'); return; }
   setStatus('Đang tải '+cfg.title.toLowerCase()+'...');
   try{
     let report;
@@ -94,7 +105,7 @@ async function load(){
       const res=await fetch(cfg.url+'?'+q,{credentials:'same-origin',headers:{Accept:'application/json'}});
       if(my!==seq) return;
       if(res.status===401){ showLogin(true); setStatus('Cần đăng nhập để xem báo cáo.','err'); return; }
-      if(res.status===400){ setStatus('Máy chủ từ chối khoảng ngày đã chọn. Kiểm tra lại ngày bắt đầu và ngày kết thúc.','err'); return; }
+      if(res.status===400){ markInvalid(['fFrom','fTo']); setStatus('Máy chủ từ chối khoảng ngày đã chọn. Kiểm tra lại ngày bắt đầu và ngày kết thúc.','err'); return; }
       if(!res.ok){ setStatus('Không tải được báo cáo (HTTP '+res.status+').','err'); return; }
       report=await res.json();
     }
@@ -111,6 +122,7 @@ function render(report){
   const sum=rows.reduce((s,r)=>s+Number(r.totalQuantity||0),0);
   $('content').hidden=false; $('csvBtn').disabled=false;
   $('sumQty').textContent=fmt(sum); $('sumRows').textContent=fmt(rows.length);
+  $('cap').textContent=cfg.title+', từ '+$('fFrom').value+' đến '+$('fTo').value;
   const mm=$('mismatch');
   if(report.totalQuantity!==undefined && Number(report.totalQuantity)!==sum){
     mm.hidden=false; mm.textContent='Cảnh báo: tổng các dòng ('+fmt(sum)+') khác tổng máy chủ trả về ('+fmt(report.totalQuantity)+'). Không dùng làm minh chứng.';
@@ -118,7 +130,7 @@ function render(report){
 
   const th=$('thead'); th.textContent='';
   const hr=document.createElement('tr');
-  cfg.cols.concat(['Số lượng']).forEach((c,i)=>{ const h=document.createElement('th'); h.textContent=c; if(i===2) h.className='n'; hr.appendChild(h); });
+  cfg.cols.concat(['Số lượng']).forEach((c,i)=>{ const h=document.createElement('th'); h.scope='col'; h.textContent=c; if(i===2) h.className='n'; hr.appendChild(h); });
   th.appendChild(hr);
   const tb=$('rows'); tb.textContent='';
   rows.forEach(r=>{
@@ -141,8 +153,6 @@ function render(report){
   });
 }
 
-/* Xuất .xlsx: không phụ thuộc dấu phân cách hay mã hóa của Excel. Chuỗi luôn là ô văn bản
-   (không bị hiểu thành công thức); ngày giữ dạng chữ yyyy-MM-dd. Cùng tập dữ liệu với biểu đồ. */
 $('csvBtn').onclick=()=>{
   if(!rows.length) return;
   if(typeof XLSX==='undefined'){ setStatus('Không tải được thư viện xuất Excel (kiểm tra kết nối mạng).','err'); return; }

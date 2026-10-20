@@ -1,84 +1,97 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f5f8;
+    color: #172033;
+    margin: 0;
+    padding: 24px;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f3f5f8;
-            color: #172033;
-            margin: 0;
-            padding: 24px;
-        }
+main {
+    max-width: 1200px;
+    margin: auto;
+}
 
-        main {
-            max-width: 1200px;
-            margin: auto;
-        }
+section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+}
 
-        section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 18px;
-        }
+form, .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 12px;
+}
 
-        form, .controls {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: end;
-            gap: 12px;
-        }
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
 
-        label {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+input, select, button {
+    padding: 9px;
+    font: inherit;
+    border: 1px solid #6b7686;
+    border-radius: 5px;
+}
 
-        input, select, button {
-            padding: 9px;
-            font: inherit;
-            border: 1px solid #b8c2d0;
-            border-radius: 5px;
-        }
+button {
+    cursor: pointer;
+    background: #175cd3;
+    color: white;
+}
 
-        button {
-            cursor: pointer;
-            background: #175cd3;
-            color: white;
-        }
+button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: default;
-        }
+:focus-visible {
+    outline: 3px solid #c2570c;
+    outline-offset: 2px;
+}
 
-        .table-wrap {
-            overflow-x: auto;
-        }
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+.table-wrap {
+    overflow-x: auto;
+}
 
-        th, td {
-            border: 1px solid #d9d9d9;
-            padding: 10px;
-            text-align: left;
-            overflow-wrap: anywhere;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        th {
-            background: #e7eef8;
-        }
+th, td {
+    border: 1px solid #d9d9d9;
+    padding: 10px;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
 
-        #message {
-            white-space: pre-wrap;
-        }
+th {
+    background: #e7eef8;
+}
 
-        .error {
-            color: #b42318;
-        }
+#message {
+    white-space: pre-wrap;
+}
 
-        .controls {
-            margin-top: 16px;
-            align-items: center;
-        }
+.error {
+    color: #b42318;
+}
+
+.controls {
+    margin-top: 16px;
+    align-items: center;
+}
