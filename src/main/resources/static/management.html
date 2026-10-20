@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow"><title>Quản lý kho | Kho hàng</title>
+  <meta name="description" content="Quản lý sản phẩm, danh sách kho và tra cứu tồn kho theo quyền tài khoản.">
+  <link rel="stylesheet" href="/workspace.css"><link rel="stylesheet" href="/management.css">
+  <script src="/session.js" defer></script><script src="/entity-labels.js" defer></script><script src="/management.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#managementPanel">Đến nội dung quản lý</a>
+<noscript><p>Cần bật JavaScript để sử dụng quản lý kho.</p></noscript>
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Thanh điều hướng">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">K</span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
+    <p class="nav-label">KHÔNG GIAN LÀM VIỆC</p>
+    <nav class="app-nav" aria-label="Điều hướng chính">
+      <a href="/">Tổng quan</a><a href="/management.html" data-permission="management" aria-current="page" hidden>Quản lý kho</a>
+      <a href="/receipts.html" data-permission="receipts" hidden>Phiếu kho</a><a href="/accounts.html" data-permission="accounts" hidden>Tài khoản</a><a href="/reports.html" data-permission="reports" hidden>Báo cáo kho</a><a href="/audit-logs.html" data-permission="audit" hidden>Nhật ký hệ thống</a>
+      <a href="/login.html?next=/management.html" data-guest>Đăng nhập</a>
+    </nav>
+    <div class="sidebar-footer"><span class="team-mark">N5</span><div><strong>Nhóm 5</strong><small>Thiết kế Web nâng cao</small></div></div>
+  </aside>
+  <main class="app-main">
+    <div class="topbar"><p>Không gian làm việc <span>/</span> <strong>Quản lý kho</strong></p><div class="topbar-account" data-member hidden><a href="/" class="topbar-link"><span data-account-name></span></a><button type="button" class="ghost" data-logout>Đăng xuất</button><span data-logout-error class="error" role="alert"></span></div></div>
+    <header class="page-heading"><div><p class="eyebrow">DANH MỤC VÀ TỒN KHO</p><h1>Quản lý kho</h1><p class="page-description">Tra cứu sản phẩm, quản lý kho và theo dõi số lượng tồn.</p></div><span class="page-tag" data-account-role>Đang kiểm tra phiên</span></header>
+    <div id="guestGate" class="card" hidden><h2>Đăng nhập để tiếp tục</h2><p>Dùng tài khoản của bạn để truy cập dữ liệu kho.</p><a class="button" href="/login.html?next=/management.html">Đến trang đăng nhập</a></div>
+    <p id="sessionError" class="error" role="alert"></p>
+    <div id="managementContent" hidden>
+      <nav class="management-tabs" role="tablist" aria-label="Nhóm dữ liệu">
+        <button id="tab-products" type="button" role="tab" aria-controls="managementPanel" aria-selected="true" tabindex="0" data-tab="products">Sản phẩm</button>
+        <button id="tab-warehouses" type="button" role="tab" aria-controls="managementPanel" aria-selected="false" tabindex="-1" data-tab="warehouses">Kho hàng</button>
+        <button id="tab-inventories" type="button" role="tab" aria-controls="managementPanel" aria-selected="false" tabindex="-1" data-tab="inventories">Tồn kho</button>
+      </nav>
+      <section id="managementPanel" class="card" role="tabpanel" aria-labelledby="tab-products" aria-busy="false">
+        <div class="section-heading"><div><h2 id="listTitle">Danh sách sản phẩm</h2><p id="listNote" class="muted"></p></div><button type="button" id="addRecord" hidden>Thêm sản phẩm</button></div>
+        <form id="searchForm" class="management-toolbar">
+          <div class="search-field"><label for="searchInput" id="searchLabel">Tìm theo tên hoặc SKU</label><input id="searchInput" type="search" placeholder="Nhập từ khóa sản phẩm" maxlength="120"></div>
+          <button type="submit">Tìm kiếm</button><button type="button" id="resetSearch" class="ghost">Làm mới</button>
+          <div><label for="pageSize">Số dòng mỗi trang</label><select id="pageSize"><option value="20">20</option><option value="50">50</option><option value="100">100</option></select></div>
+        <div id="productFilters" class="product-filters">
+<div><label for="filterUnit">Đơn vị tính</label><input id="filterUnit" maxlength="120" placeholder="Ví dụ: cái"></div>
+<div><label for="filterMin">Giá từ</label><input id="filterMin" type="number" min="0" step="any"></div>
+<div><label for="filterMax">Giá đến</label><input id="filterMax" type="number" min="0" step="any"></div>
+<div><label for="filterSort">Sắp xếp theo</label><select id="filterSort"><option value="id">ID</option><option value="sku">SKU</option><option value="name">Tên</option><option value="unit">Đơn vị</option><option value="price">Giá</option></select></div>
+<div><label for="filterDirection">Thứ tự</label><select id="filterDirection"><option value="asc">Tăng dần</option><option value="desc">Giảm dần</option></select></div>
+</div></form>
+        <p id="listMessage" role="status" aria-live="polite"></p>
+        <div class="table-wrap management-table" tabindex="0" role="region" aria-label="Bảng dữ liệu kho">
+          <table><caption id="listCaption">Danh sách sản phẩm</caption><thead id="listHead"></thead><tbody id="listRows"></tbody></table>
+        </div>
+        <div class="pager"><button type="button" id="previousPage" class="ghost" disabled>Trang trước</button><span id="listPage" role="status">Chưa có dữ liệu</span><button type="button" id="nextPage" class="ghost" disabled>Trang sau</button></div>
+      </section>
+    </div>
+    <footer class="page-footer">Quản lý sản phẩm và kho hàng <span>Nhóm 5</span></footer>
+  </main>
+</div>
+<dialog id="editorDialog" aria-labelledby="editorTitle" aria-describedby="editorNote">
+  <form id="editorForm">
+    <h2 id="editorTitle">Thêm sản phẩm</h2><p id="editorNote" class="muted"></p>
+    <div id="editorFields"></div><p id="editorError" class="error" role="alert"></p>
+    <div class="editor-actions"><button type="button" id="cancelEdit" class="ghost">Hủy</button><button id="saveRecord" type="submit">Lưu thay đổi</button></div>
+  </form>
+</dialog>
+</body>
+</html>

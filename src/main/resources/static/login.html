@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đăng nhập | Quản lý kho</title>
+  <meta name="description" content="Đăng nhập tài khoản để sử dụng hệ thống quản lý kho theo vai trò được cấp.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/workspace.css">
+  <link rel="stylesheet" href="/login.css">
+  <script src="/session.js" defer></script>
+  <script src="/login.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#authTitle">Đến biểu mẫu</a>
+<noscript><p>Cần bật JavaScript để đăng nhập tài khoản.</p></noscript>
+<main class="auth-layout">
+  <section class="auth-intro" aria-labelledby="introTitle">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">K</span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
+    <div class="intro-copy"><p class="eyebrow">KHÔNG GIAN LÀM VIỆC</p><h1 id="introTitle">Quản lý kho <br>thuận tiện hơn.</h1><p>Một tài khoản để làm việc với dữ liệu kho và truy cập các công cụ được cấp quyền.</p></div>
+    <p class="intro-footer">Hệ thống Quản trị Chuỗi cung ứng và Kho hàng · Nhóm 5</p>
+  </section>
+  <section class="auth-panel">
+    <a href="/" class="back-link">← Về trang chủ</a>
+    <div class="auth-card">
+      <div class="auth-tabs" aria-label="Tài khoản"><button type="button" id="signInTab" aria-pressed="true">Đăng nhập</button><button type="button" id="signUpTab" aria-pressed="false">Đăng ký</button></div>
+      <h2 id="authTitle" tabindex="-1">Chào mừng trở lại</h2>
+      <p id="authDescription" class="muted">Nhập tài khoản của bạn để tiếp tục.</p>
+      <p id="sessionNotice" class="auth-notice" role="status" hidden></p>
+      <form id="authForm" aria-labelledby="authTitle">
+        <label for="username">Tên đăng nhập</label>
+        <input id="username" name="username" autocomplete="username" required maxlength="100" autocapitalize="none" spellcheck="false" aria-describedby="authError">
+        <div class="password-heading"><label for="password">Mật khẩu</label><button type="button" id="showPassword" class="text-button" aria-controls="password" aria-pressed="false">Hiện mật khẩu</button></div>
+        <input id="password" name="password" type="password" autocomplete="current-password" required aria-describedby="authError">
+        <div id="confirmGroup" hidden><label for="confirmPassword">Nhập lại mật khẩu</label><input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" aria-describedby="authError"></div>
+        <p id="registrationNote" class="muted" hidden>Tài khoản mới có vai trò nhân viên kho. Liên hệ quản trị viên nếu cần thay đổi quyền.</p>
+        <p id="authError" class="error" role="alert"></p>
+        <button id="submitAuth" type="submit">Đăng nhập</button>
+      </form>
+      <p class="auth-help">Nếu quên mật khẩu, hãy liên hệ quản trị viên để được hỗ trợ.</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

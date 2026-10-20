@@ -1,0 +1,17 @@
+.management-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
+.management-tabs button { background: var(--card); color: var(--mut); border-color: var(--br); }
+.management-tabs button[aria-selected=true] { background: var(--ac); border-color: var(--ac); color: white; }
+.management-toolbar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.management-toolbar .search-field { flex: 1; min-width: min(240px,100%); }.management-toolbar select { margin-top: 6px; }
+.management-table { max-height: 580px; }.management-table table { min-width: 680px; }.management-table th { position: sticky; top: 0; z-index: 1; white-space: nowrap; }
+.management-table td { overflow-wrap: anywhere; max-width: 360px; }.management-table .number { text-align: right; white-space: nowrap; }
+.management-table button { font-size: 12px; padding: 6px 10px; min-height: 36px; white-space: nowrap; }
+.stock-low { display: inline-block; color: var(--warn); background: var(--warnbg); padding: 3px 8px; border-radius: 5px; font-size: 11px; }
+#listMessage { min-height: 24px; }#listNote { margin-bottom: 0; }#listPage { overflow-wrap: anywhere; }
+dialog { width: min(520px,calc(100% - 32px)); max-height: calc(100vh - 40px); padding: 28px; border: 1px solid var(--br); border-radius: 12px; background: var(--card); color: var(--tx); box-shadow: 0 20px 80px #0003; }
+dialog::backdrop { background: #15233488; }dialog h2 { font-size: 21px; }dialog input { margin-bottom: 16px; }
+.editor-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-top: 20px; }#editorError { overflow-wrap: anywhere; }
+@media(max-width:760px) { .management-toolbar .search-field { flex-basis: 100%; }.management-toolbar>div:last-child { width: 100%; }.management-toolbar button { flex: 1; }.management-table th,.management-table td { padding: 12px 10px; }.management-tabs button { flex: 1; padding: 10px; }.management-tabs { gap: 6px; }dialog { padding: 20px; } }
+@media(prefers-color-scheme:dark) { .management-tabs button[aria-selected=true] { color: #101a28; } }
+
+.product-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;flex-basis:100%;width:100%}.product-filters[hidden]{display:none}.product-filters>div{min-width:0}
