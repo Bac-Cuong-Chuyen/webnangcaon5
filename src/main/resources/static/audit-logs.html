@@ -17,20 +17,21 @@
         <form id="loginForm">
             <label>
                 Tài khoản
-                <input id="loginUsername"
+                <input id="loginUsername" aria-describedby="loginError"
                        autocomplete="username" required>
             </label>
 
             <label>
                 Mật khẩu
-                <input id="loginPassword" type="password"
+                <input id="loginPassword" aria-describedby="loginError" type="password"
                        autocomplete="current-password" required>
             </label>
 
             <button type="submit">Đăng nhập</button>
         </form>
 
-        <p id="accountStatus">Chưa đăng nhập tại trang này.</p>
+        <p id="loginError" class="error" role="alert"></p>
+        <p id="accountStatus" role="status">Chưa đăng nhập tại trang này.</p>
         <button id="logoutButton" type="button">Đăng xuất</button>
     </section>
 
@@ -55,12 +56,12 @@
 
             <label>
                 Từ thời điểm
-                <input id="fromTime" type="datetime-local" step="1">
+                <input id="fromTime" aria-describedby="rangeError" type="datetime-local" step="1">
             </label>
 
             <label>
                 Đến thời điểm
-                <input id="toTime" type="datetime-local" step="1">
+                <input id="toTime" aria-describedby="rangeError" type="datetime-local" step="1">
             </label>
 
             <label>
@@ -77,21 +78,23 @@
             <button id="resetButton" type="button">Xóa bộ lọc</button>
         </form>
 
+        <p id="rangeError" class="error" role="alert"></p>
         <p>Thời gian theo giờ lưu trong ứng dụng, gồm cả hai mốc biên.</p>
     </section>
 
     <section>
         <p id="message" role="status" aria-live="polite"></p>
 
-        <div class="table-wrap">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Bảng nhật ký hệ thống">
             <table>
+                <caption>Chi tiết nhật ký hệ thống</caption>
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Người thực hiện</th>
-                    <th>Hành động</th>
-                    <th>Đối tượng</th>
-                    <th>Thời điểm</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Người thực hiện</th>
+                    <th scope="col">Hành động</th>
+                    <th scope="col">Đối tượng</th>
+                    <th scope="col">Thời điểm</th>
                 </tr>
                 </thead>
                 <tbody id="rows"></tbody>
@@ -102,7 +105,7 @@
             <button id="previousButton" type="button" disabled>
                 Trang trước
             </button>
-            <span id="pageInfo">Chưa tải dữ liệu</span>
+            <span id="pageInfo" role="status">Chưa tải dữ liệu</span>
             <button id="nextButton" type="button" disabled>
                 Trang sau
             </button>
