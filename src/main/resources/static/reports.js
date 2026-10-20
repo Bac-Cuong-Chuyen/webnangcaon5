@@ -87,12 +87,16 @@ function showUser(u){
 }
 $('loginForm').onsubmit=async event=>{
   event.preventDefault();$('loginErr').textContent='';$('loginBtn').disabled=true;
+  $('lu').removeAttribute('aria-invalid');$('lp').removeAttribute('aria-invalid');
   try{
     const response=await secureFetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({username:$('lu').value.trim(),password:$('lp').value})});
     if(!response.ok){
       $('loginErr').textContent=response.status===429?'Đăng nhập tạm thời bị giới hạn. Vui lòng thử lại sau.':
         response.status===401?'Tên đăng nhập hoặc mật khẩu không đúng.':'Không đăng nhập được (HTTP '+response.status+').';
+      if(response.status===401){
+        $('lu').setAttribute('aria-invalid','true');$('lp').setAttribute('aria-invalid','true');$('lu').focus();
+      }
       return;
     }
     showUser(await response.json());showLogin(false);$('lp').value='';$('applyBtn').focus();await load();
@@ -113,10 +117,13 @@ async function load(){
   const cfg=REPORTS[tab],my=++seq,from=$('fFrom').value,to=$('fTo').value;
   isDemo=$('demoChk').checked;$('demoBanner').hidden=!isDemo;clearResult();
   $('reportPanel').setAttribute('aria-busy','false');
-  $('fFrom').removeAttribute('aria-invalid');$('fTo').removeAttribute('aria-invalid');
+  clearRangeError();
   if(!from||!to||from>to){
-    $('fFrom').setAttribute('aria-invalid','true');
-    setStatus('Chọn đủ ngày và bảo đảm ngày bắt đầu không lớn hơn ngày kết thúc.','err');$('fFrom').focus();return;
+    if(!from||from>to)$('fFrom').setAttribute('aria-invalid','true');
+    if(!to||from>to)$('fTo').setAttribute('aria-invalid','true');
+    $('rangeErr').textContent='Chọn đủ ngày; ngày bắt đầu phải trước hoặc trùng ngày kết thúc. Hãy sửa một trong hai ngày rồi xem lại báo cáo.';
+    setStatus('Chưa tải báo cáo do khoảng ngày không hợp lệ.','err');
+    (!from||from>to?$('fFrom'):$('fTo')).focus();return;
   }
   if(!isDemo&&!currentUser){showLogin(true);setStatus('Cần đăng nhập để xem báo cáo.');return;}
   setStatus('Đang tải '+cfg.title.toLowerCase()+'…');$('reportPanel').setAttribute('aria-busy','true');
@@ -198,5 +205,13 @@ $('csvBtn').onclick=()=>{
   const book=XLSX.utils.book_new();XLSX.utils.book_append_sheet(book,sheet,'Bao cao');
   XLSX.writeFile(book,(isDemo?'MAU_':'')+'bao-cao-'+tab+'_'+loadedFrom+'_'+loadedTo+'.xlsx');
 };
+function clearRangeError(){
+  $('rangeErr').textContent='';
+  $('fFrom').removeAttribute('aria-invalid');$('fTo').removeAttribute('aria-invalid');
+}
+['fFrom','fTo'].forEach(id=>$(id).addEventListener('input',clearRangeError));
+['lu','lp'].forEach(id=>$(id).addEventListener('input',()=>{
+  $('loginErr').textContent='';$('lu').removeAttribute('aria-invalid');$('lp').removeAttribute('aria-invalid');
+}));
 $('filterForm').onsubmit=event=>{event.preventDefault();load();};$('demoChk').onchange=load;
 buildTabs();restoreSession();
