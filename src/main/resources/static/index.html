@@ -12,13 +12,42 @@
   <meta property="og:locale" content="vi_VN">
   <meta property="og:site_name" content="Nhóm 5 – Quản trị chuỗi cung ứng">
   <meta property="og:url" content="__B09_PUBLIC_BASE__/">
+  <link rel="stylesheet" href="/workspace.css">
   <link rel="stylesheet" href="/index.css">
 </head>
 <body>
-  <main>
-    <h1>Hệ thống Quản trị Chuỗi cung ứng và Kho hàng</h1>
-    <p>Nhóm 5 · Lớp học phần: Thiết kế Web nâng cao</p>
-    <p><a href="/reports.html">Trang báo cáo</a></p>
-  </main>
-</body>
+<a class="skip-link" href="#mainContent">Đến nội dung chính</a>
+<div class="app-shell">
+<aside class="sidebar" aria-label="Thanh điều hướng">
+  <a class="brand" href="/" aria-label="Kho hàng – Trang chủ"><span class="brand-mark"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 7 9-4 9 4v10l-9 4-9-4Z"></path><path d="m3 7 9 4 9-4M12 11v10M7.5 5l9 4"></path></svg></span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
+  <p class="nav-label">KHÔNG GIAN LÀM VIỆC</p>
+  <nav class="app-nav" aria-label="Điều hướng chính"><a href="/" aria-current="page"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg><span>Tổng quan</span></a>
+<a href="/management.html" data-permission="management" hidden><span aria-hidden="true">▦</span><span>Quản lý kho</span></a><a href="/receipts.html" data-permission="receipts" hidden>Phiếu kho</a><a href="/accounts.html" data-permission="accounts" hidden>Tài khoản</a><a href="/reports.html" data-permission="reports" hidden=""><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4v16h16M8 15v-4m5 4V7m5 8v-6"></path></svg><span>Báo cáo kho</span></a>
+<a href="/audit-logs.html" data-permission="audit" hidden=""><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 7h6M9 12h6m-6 5h4"></path></svg><span>Nhật ký hệ thống</span></a><a href="/login.html" data-guest="">Đăng nhập</a></nav>
+  <div class="sidebar-footer"><span class="team-mark">N5</span><div><strong>Nhóm 5</strong><small>Thiết kế Web nâng cao</small></div></div>
+</aside>
+<main class="app-main" id="mainContent" tabindex="-1">
+<div class="topbar"><p>Không gian làm việc <span aria-hidden="true">/</span> <strong>Tổng quan</strong></p><a href="/login.html" class="topbar-link" data-guest="" id="homeLogin">Đăng nhập</a></div>
+<header class="page-heading"><div><p class="eyebrow">TỔNG QUAN</p><h1 id="homeTitle">Không gian quản lý kho</h1><p class="page-description" id="homeDescription">Theo dõi hoạt động kho và tra cứu thông tin tại một nơi.</p></div><span class="page-tag">Nhóm 5</span></header>
+<section id="accountSection" class="card account-card" hidden aria-labelledby="accountTitle">
+<div><p class="eyebrow">TÀI KHOẢN CỦA BẠN</p><h2 id="accountTitle" data-account-name></h2><p class="role-badge" data-account-role></p><p class="muted">Quyền truy cập được áp dụng theo vai trò tài khoản. Liên hệ quản trị viên khi cần hỗ trợ.</p></div>
+<div><button type="button" class="ghost" id="logoutHome">Đăng xuất</button><p id="logoutError" class="error" role="alert"></p></div></section>
+<section id="overviewSection" class="card" hidden aria-labelledby="overviewTitle">
+<div class="section-heading"><div><h2 id="overviewTitle">Dữ liệu tổng quan</h2><p class="muted">Thông tin lấy từ hệ thống theo quyền tài khoản.</p></div><button id="refreshOverview" type="button" class="ghost">Tải lại</button></div>
+<p id="productCount" role="status">Đang tải danh mục…</p>
+<div id="overviewReports" hidden><h3>Hoạt động theo khoảng ngày</h3><form id="overviewForm" class="overview-filter">
+<div><label for="overviewFrom">Từ ngày</label><input id="overviewFrom" type="date" required></div><div><label for="overviewTo">Đến ngày</label><input id="overviewTo" type="date" required></div><button id="loadOverview" type="submit">Xem tổng hợp</button></form>
+<p id="overviewStatus" role="status" aria-live="polite">Chọn khoảng ngày và bấm Xem tổng hợp.</p><div id="overviewMetrics" class="overview-metrics"></div>
+<p class="muted">Số lượng hàng theo báo cáo nhập, xuất, chuyển, chưa quy đổi đơn vị (cái, kg, hộp…); không phải số phiếu hay tồn kho hiện tại. <a href="/reports.html">Mở báo cáo chi tiết →</a></p></div>
+</section><section id="quickSection" class="card" hidden aria-labelledby="quickTitle"><h2 id="quickTitle">Công cụ làm việc</h2><div class="member-actions">
+<a class="quick-card" href="/management.html" data-permission="management" hidden><div><h3>Quản lý kho</h3><p>Quản lý sản phẩm, kho hàng và tra cứu tồn kho.</p><span class="card-link">Mở quản lý kho →</span></div></a><a class="quick-card" href="/reports.html" data-permission="reports" hidden><div><h3>Báo cáo kho</h3><p>Xem báo cáo nhập, xuất, chuyển kho và tải Excel.</p><span class="card-link">Mở báo cáo →</span></div></a>
+<a class="quick-card" href="/audit-logs.html" data-permission="audit" hidden><div><h3>Nhật ký hệ thống</h3><p>Tra cứu hoạt động theo tài khoản và thời điểm.</p><span class="card-link">Tra cứu nhật ký →</span></div></a><a class="quick-card" href="/receipts.html" data-permission="receipts" hidden><div><h3>Phiếu kho</h3><p>Lập và tra cứu phiếu nhập, xuất và chuyển kho theo quyền.</p><span class="card-link">Mở phiếu kho →</span></div></a><a class="quick-card" href="/accounts.html" data-permission="accounts" hidden><div><h3>Quản lý tài khoản</h3><p>Tra cứu người dùng và cấp vai trò trong hệ thống.</p><span class="card-link">Quản lý tài khoản →</span></div></a></div></section>
+<div class="session-retry" id="sessionRetry" hidden><p id="homeSessionError" class="error" role="status" hidden></p><button type="button" class="ghost" id="retrySession">Thử lại</button></div><section class="welcome-card" aria-labelledby="welcomeTitle" id="welcomeSection">
+  <div><span class="welcome-label">QUẢN TRỊ CHUỖI CUNG ỨNG</span><h2 id="welcomeTitle">Làm việc cùng dữ liệu kho của bạn</h2><p>Đăng nhập bằng tài khoản của bạn để sử dụng các công cụ quản lý kho theo quyền được cấp.</p><a href="/login.html" class="button">Đăng nhập tài khoản</a></div>
+  <div class="warehouse-art" aria-hidden="true"><svg viewbox="0 0 320 220" fill="none"><path d="M30 181h260" stroke="#cad9eb" stroke-width="2"></path><path d="m58 86 102-48 102 48v96H58Z" fill="#fff" stroke="#a3bbd6" stroke-width="2"></path><path d="m47 88 113-54 113 54" stroke="#285e9b" stroke-width="7" stroke-linecap="round"></path><path d="M91 112h138v70H91Z" fill="#e9f0f9" stroke="#a3bbd6" stroke-width="2"></path><path d="M91 127h138M91 142h138M91 157h138" stroke="#c1d1e4" stroke-width="2"></path><path d="M138 70h44v18h-44Z" fill="#d9e7f8"></path><path d="M53 150h44v32H53Z" fill="#d8e7fa" stroke="#487bad" stroke-width="2"></path><path d="M69 150v10h12v-10M224 147h39v35h-39Z" stroke="#487bad" stroke-width="2"></path><path d="M224 147h39v35h-39Z" fill="#a9c8eb" stroke="#487bad" stroke-width="2"></path><path d="M238 147v11h11v-11" stroke="#487bad" stroke-width="2"></path></svg></div>
+</section>
+<footer class="page-footer">Hệ thống Quản trị Chuỗi cung ứng và Kho hàng <span>Nhóm 5</span></footer>
+</main>
+</div>
+<script src="/session.js" defer></script><div id="guideSection" hidden=""></div><script src="/home.js" defer></script></body>
 </html>

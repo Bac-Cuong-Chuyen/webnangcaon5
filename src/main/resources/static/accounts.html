@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow"><title>Quản lý tài khoản | Kho hàng</title>
+  <meta name="description" content="Tra cứu tài khoản và cấp vai trò trong hệ thống kho dành cho quản trị viên.">
+  <link rel="stylesheet" href="/workspace.css"><link rel="stylesheet" href="/accounts.css">
+  <script src="/session.js" defer></script><script src="/accounts.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#accountsContent">Đến danh sách tài khoản</a>
+<noscript><p>Cần bật JavaScript để quản lý tài khoản.</p></noscript>
+<div class="app-shell">
+<aside class="sidebar" aria-label="Thanh điều hướng">
+  <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">K</span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
+  <p class="nav-label">KHÔNG GIAN LÀM VIỆC</p>
+  <nav class="app-nav" aria-label="Điều hướng chính">
+    <a href="/">Tổng quan</a><a href="/management.html" data-permission="management" hidden>Quản lý kho</a><a href="/receipts.html" data-permission="receipts" hidden>Phiếu kho</a>
+    <a href="/accounts.html" data-permission="accounts" aria-current="page" hidden>Tài khoản</a><a href="/reports.html" data-permission="reports" hidden>Báo cáo kho</a><a href="/audit-logs.html" data-permission="audit" hidden>Nhật ký hệ thống</a>
+    <a href="/login.html?next=/accounts.html" data-guest>Đăng nhập</a>
+  </nav>
+  <div class="sidebar-footer"><span class="team-mark">N5</span><div><strong>Nhóm 5</strong><small>Thiết kế Web nâng cao</small></div></div>
+</aside>
+<main class="app-main">
+  <div class="topbar"><p>Không gian làm việc <span>/</span> <strong>Tài khoản</strong></p><div class="topbar-account" data-member hidden><a href="/" class="topbar-link"><span data-account-name></span></a><button type="button" class="ghost" data-logout>Đăng xuất</button><span data-logout-error class="error" role="alert"></span></div></div>
+  <header class="page-heading"><div><p class="eyebrow">QUẢN TRỊ HỆ THỐNG</p><h1>Quản lý tài khoản</h1><p class="page-description">Tra cứu người dùng và cấp vai trò phù hợp với công việc.</p></div><span class="page-tag" data-account-role></span></header>
+  <section id="accountsGate" class="card" hidden><h2>Đăng nhập tài khoản quản trị</h2><p>Chỉ quản trị viên được tra cứu và cấp vai trò người dùng.</p><a class="button" href="/login.html?next=/accounts.html">Đến trang đăng nhập</a></section>
+  <p id="accountsAccess" class="error" role="alert"></p>
+  <section id="accountsContent" class="card" aria-labelledby="accountsTitle" aria-busy="false" hidden>
+    <div class="section-heading"><div><h2 id="accountsTitle">Danh sách tài khoản</h2><p class="muted">Tài khoản đăng ký mới là nhân viên kho. Quản trị viên cấp lại vai trò tại đây.</p></div></div>
+    <form id="accountSearch" class="account-toolbar">
+      <div class="account-search-field"><label for="accountId">Tra cứu theo ID tài khoản</label><input id="accountId" type="search" placeholder="Nhập ID hoặc để trống xem danh sách"></div>
+      <button type="submit">Tra cứu</button><button id="accountReset" type="button" class="ghost">Làm mới</button>
+      <div><label for="accountSize">Số dòng mỗi trang</label><select id="accountSize"><option value="20">20</option><option value="50">50</option><option value="100">100</option></select></div>
+    </form>
+    <p id="accountMessage" role="status" aria-live="polite"></p>
+    <div class="table-wrap account-table" role="region" aria-label="Bảng tài khoản và vai trò" tabindex="0"><table><caption>Tài khoản trong hệ thống</caption><thead><tr><th scope="col">ID</th><th scope="col">Tên đăng nhập</th><th scope="col">Vai trò hiện tại</th><th scope="col">Thao tác</th></tr></thead><tbody id="accountRows"></tbody></table></div>
+    <nav class="pager" aria-label="Phân trang tài khoản"><button id="accountPrev" type="button" class="ghost" disabled>Trang trước</button><span id="accountPage" role="status">Chưa có dữ liệu</span><button id="accountNext" type="button" class="ghost" disabled>Trang sau</button></nav>
+    <p class="muted account-footnote">Sau khi cấp vai trò, người dùng cần đăng xuất và đăng nhập lại để sử dụng quyền mới.</p>
+  </section>
+  <footer class="page-footer">Quản lý tài khoản và phân quyền <span>Nhóm 5</span></footer>
+</main>
+</div>
+<dialog id="roleDialog" aria-labelledby="roleTitle" aria-describedby="roleNote">
+  <form id="roleForm">
+    <h2 id="roleTitle">Cấp vai trò</h2><p id="roleTarget"></p><p id="roleCurrent" class="muted"></p>
+    <label for="newRole">Vai trò mới</label>
+    <select id="newRole" required><option value="" disabled>Chọn vai trò</option><option value="WAREHOUSE_STAFF">Nhân viên kho</option><option value="WAREHOUSE_MANAGER">Quản lý kho</option><option value="DIRECTOR">Quản lý/Ban giám đốc</option><option value="ADMIN">Quản trị viên</option></select>
+    <p id="roleDescription" class="role-description"></p>
+    <p id="roleNote" class="muted">Vai trò được chọn áp dụng khi tài khoản đăng nhập lại. Thao tác này không thay đổi mật khẩu.</p>
+    <p id="roleError" class="error" role="alert"></p>
+    <div class="role-actions"><button id="cancelRole" type="button" class="ghost">Quay lại</button><button id="saveRole" type="submit" disabled>Xác nhận đổi vai trò</button></div>
+  </form>
+</dialog>
+</body>
+</html>
