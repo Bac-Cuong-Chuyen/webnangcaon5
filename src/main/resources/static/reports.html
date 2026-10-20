@@ -6,32 +6,31 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Báo cáo nhập, xuất, chuyển kho</title>
 <meta name="description" content="Xem báo cáo nhập, xuất và chuyển kho theo khoảng ngày; đối chiếu số lượng, tra cứu bảng chi tiết và xuất Excel theo quyền tài khoản.">
+<link rel="stylesheet" href="/workspace.css">
 <link rel="stylesheet" href="/reports.css">
 </head>
 <body>
 <a class="skip-link" href="#reportPanel">Đến kết quả báo cáo</a>
 <noscript><p>Cần bật JavaScript để đăng nhập và xem báo cáo.</p></noscript>
-<main>
-<header>
-  <h1>Báo cáo kho</h1>
-  <div id="userBox"></div>
-</header>
+<div class="app-shell">
+<aside class="sidebar" aria-label="Thanh điều hướng">
+  <a class="brand" href="/" aria-label="Kho hàng – Trang chủ"><span class="brand-mark"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 7 9-4 9 4v10l-9 4-9-4Z"></path><path d="m3 7 9 4 9-4M12 11v10M7.5 5l9 4"></path></svg></span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
+  <p class="nav-label">KHÔNG GIAN LÀM VIỆC</p>
+  <nav class="app-nav" aria-label="Điều hướng chính"><a href="/"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg><span>Tổng quan</span></a>
+<a href="/management.html" data-permission="management" hidden><span aria-hidden="true">▦</span><span>Quản lý kho</span></a><a href="/receipts.html" data-permission="receipts" hidden>Phiếu kho</a><a href="/accounts.html" data-permission="accounts" hidden>Tài khoản</a><a href="/reports.html" aria-current="page" data-permission="reports" hidden=""><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4v16h16M8 15v-4m5 4V7m5 8v-6"></path></svg><span>Báo cáo kho</span></a>
+<a href="/audit-logs.html" data-permission="audit" hidden=""><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 7h6M9 12h6m-6 5h4"></path></svg><span>Nhật ký hệ thống</span></a><a href="/login.html" data-guest="">Đăng nhập</a></nav>
+  <div class="sidebar-footer"><span class="team-mark">N5</span><div><strong>Nhóm 5</strong><small>Thiết kế Web nâng cao</small></div></div>
+</aside>
+<main class="app-main">
+<div class="topbar"><p>Không gian làm việc <span aria-hidden="true">/</span> <strong>Báo cáo kho</strong></p><a href="/reports.html" class="topbar-link" data-permission="reports" hidden="">Mở báo cáo <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-5-5 5 5-5 5"></path></svg></a></div>
+<header class="page-heading"><div><p class="eyebrow">BÁO CÁO &amp; THỐNG KÊ</p><h1>Báo cáo kho</h1><p class="page-description">Theo dõi số lượng nhập, xuất và chuyển kho theo thời gian.</p></div><div id="userBox"></div></header>
 
-<section id="loginCard" class="card" aria-label="Đăng nhập">
-  <p class="login-intro">Đăng nhập để xem báo cáo.</p>
-  <form id="loginForm" class="grid">
-    <div><label for="lu">Tên đăng nhập</label><input id="lu" aria-describedby="loginErr" name="username" required type="text" autocomplete="username"></div>
-    <div><label for="lp">Mật khẩu</label><input id="lp" aria-describedby="loginErr" name="password" required type="password" autocomplete="current-password"></div>
-    <div><button id="loginBtn" type="submit">Đăng nhập</button></div>
-  </form>
-  <p id="loginErr" class="err" role="alert"></p>
-</section>
-
-<div class="tabs" role="tablist" aria-label="Loại báo cáo" id="tabs"></div>
+<section id="loginCard" class="card" hidden><h2>Đăng nhập để xem báo cáo</h2><p>Sử dụng tài khoản quản lý kho hoặc giám đốc.</p><a id="reportLoginLink" class="button" href="/login.html?next=/reports.html">Đến trang đăng nhập</a></section><div class="tabs" role="tablist" aria-label="Loại báo cáo" id="tabs"></div>
 
 <div id="demoBanner" class="banner" hidden>DỮ LIỆU MẪU – lấy từ JSON mẫu trong tài liệu, không phải từ API. Không dùng làm minh chứng.</div>
 
-<section class="card" aria-label="Bộ lọc báo cáo">
+<section class="card filter-card" aria-label="Bộ lọc báo cáo">
+  <div class="section-heading"><h2><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5h16M7 12h10m-7 7h4"></path></svg> Bộ lọc báo cáo</h2><span>Chọn khoảng thời gian</span></div>
   <form id="filterForm" class="grid">
     <div><label for="fFrom">Từ ngày</label><input id="fFrom" aria-describedby="rangeErr" required type="date" value="2026-10-14"></div>
     <div><label for="fTo">Đến ngày</label><input id="fTo" aria-describedby="rangeErr" required type="date" value="2026-10-15"></div>
@@ -42,11 +41,12 @@
 </section>
 
 <section class="card" id="reportPanel" role="tabpanel" tabindex="0" aria-labelledby="tab-import" aria-busy="false">
+  <div class="section-heading result-heading"><h2>Kết quả báo cáo</h2><button id="csvBtn" type="button" class="ghost" disabled><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4h16v-4"></path></svg> Xuất Excel (.xlsx)</button></div>
   <p id="status" role="status"></p>
   <div id="content" hidden>
     <div class="sum">
-      <div><b id="sumQty">0</b><span>Tổng số lượng ghi nhận</span></div>
-      <div><b id="sumRows">0</b><span>Số dòng dữ liệu</span></div>
+      <div class="metric"><span>Tổng số lượng ghi nhận</span><b id="sumQty">0</b><small>Theo khoảng ngày đã chọn</small></div>
+      <div class="metric"><span>Số dòng dữ liệu</span><b id="sumRows">0</b><small>Toàn bộ báo cáo đã tải</small></div>
     </div>
     <p class="note">Tổng lượng chưa quy đổi đơn vị: nếu các sản phẩm có đơn vị khác nhau thì tổng chỉ mang tính tham khảo.</p>
     <p id="mismatch" class="warn" role="alert" hidden></p>
@@ -62,11 +62,13 @@
     </nav>
     <p class="note">Bảng chia 50 dòng mỗi trang. Xuất Excel lấy toàn bộ dữ liệu của báo cáo đã tải.</p>
   </div>
-  <p><button id="csvBtn" type="button" class="ghost" disabled>Xuất Excel (.xlsx)</button></p>
-</section>
-</main>
 
-<script src="/vendor/chart-4.4.1.umd.min.js"></script>
+</section>
+<footer class="page-footer">Báo cáo kho <span>Nhóm 5</span></footer>
+</main>
+</div>
+
+<script src="/session.js" defer></script><script src="/vendor/chart-4.4.1.umd.min.js"></script>
 <script src="/vendor/xlsx-0.20.3.full.min.js"></script>
 <script src="/reports.js" defer></script>
 </body>

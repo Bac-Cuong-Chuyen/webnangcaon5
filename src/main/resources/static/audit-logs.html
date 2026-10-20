@@ -6,37 +6,26 @@
 <meta name="robots" content="noindex, nofollow">
     <title>Tra cứu nhật ký hệ thống</title>
     <meta name="description" content="Tra cứu nhật ký hệ thống theo người thực hiện, hành động, đối tượng và thời điểm dành cho tài khoản quản trị được cấp quyền.">
+    <link rel="stylesheet" href="/workspace.css">
     <link rel="stylesheet" href="/audit-logs.css">
 </head>
 <body>
-<main>
-    <h1>Tra cứu nhật ký hệ thống</h1>
-    <p>Tra cứu người thực hiện, hành động, đối tượng và thời điểm.</p>
+<a class="skip-link" href="#auditResults">Đến kết quả tra cứu</a>
+<div class="app-shell">
+<aside class="sidebar" aria-label="Thanh điều hướng">
+  <a class="brand" href="/" aria-label="Kho hàng – Trang chủ"><span class="brand-mark"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 7 9-4 9 4v10l-9 4-9-4Z"></path><path d="m3 7 9 4 9-4M12 11v10M7.5 5l9 4"></path></svg></span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
+  <p class="nav-label">KHÔNG GIAN LÀM VIỆC</p>
+  <nav class="app-nav" aria-label="Điều hướng chính"><a href="/"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg><span>Tổng quan</span></a>
+<a href="/management.html" data-permission="management" hidden><span aria-hidden="true">▦</span><span>Quản lý kho</span></a><a href="/receipts.html" data-permission="receipts" hidden>Phiếu kho</a><a href="/accounts.html" data-permission="accounts" hidden>Tài khoản</a><a href="/reports.html" data-permission="reports" hidden=""><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4v16h16M8 15v-4m5 4V7m5 8v-6"></path></svg><span>Báo cáo kho</span></a>
+<a href="/audit-logs.html" aria-current="page" data-permission="audit" hidden=""><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 7h6M9 12h6m-6 5h4"></path></svg><span>Nhật ký hệ thống</span></a><a href="/login.html" data-guest="">Đăng nhập</a></nav>
+  <div class="sidebar-footer"><span class="team-mark">N5</span><div><strong>Nhóm 5</strong><small>Thiết kế Web nâng cao</small></div></div>
+</aside>
+<main class="app-main">
+<div class="topbar"><p>Không gian làm việc <span aria-hidden="true">/</span> <strong>Nhật ký hệ thống</strong></p><a href="/reports.html" class="topbar-link" data-permission="reports" hidden="">Mở báo cáo <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14m-5-5 5 5-5 5"></path></svg></a></div>
+<header class="page-heading"><div><p class="eyebrow">QUẢN TRỊ HỆ THỐNG</p><h1>Tra cứu nhật ký hệ thống</h1><p class="page-description">Theo dõi người thực hiện, hành động và thời điểm thay đổi.</p></div><span class="page-tag">Quản trị viên</span></header>
 
-    <section>
-        <form id="loginForm">
-            <label>
-                Tài khoản
-                <input id="loginUsername" aria-describedby="loginError"
-                       autocomplete="username" required>
-            </label>
-
-            <label>
-                Mật khẩu
-                <input id="loginPassword" aria-describedby="loginError" type="password"
-                       autocomplete="current-password" required>
-            </label>
-
-            <button type="submit">Đăng nhập</button>
-        </form>
-
-        <p id="loginError" class="error" role="alert"></p>
-        <p id="accountStatus" role="status">Chưa đăng nhập tại trang này.</p>
-        <button id="logoutButton" type="button">Đăng xuất</button>
-    </section>
-
-    <section>
-        <h2>Bộ lọc nhật ký</h2>
+    <section class="card"><div class="account-row" data-member hidden><p id="accountStatus" role="status">Đang kiểm tra phiên…</p><button id="logoutButton" class="ghost" type="button">Đăng xuất</button></div><div data-guest hidden><h2>Đăng nhập để tra cứu nhật ký</h2><p>Sử dụng tài khoản quản trị viên.</p><a class="button" href="/login.html?next=/audit-logs.html">Đến trang đăng nhập</a></div><p id="accountError" class="error" role="alert"></p></section><section class="card filter-card" data-permission="audit" hidden="">
+        <div class="section-heading"><h2><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5h16M7 12h10m-7 7h4"></path></svg> Bộ lọc nhật ký</h2><span>Tìm theo nhu cầu tra cứu</span></div>
 
         <form id="filterForm">
             <label>
@@ -75,14 +64,15 @@
             </label>
 
             <button type="submit">Tra cứu</button>
-            <button id="resetButton" type="button">Xóa bộ lọc</button>
+            <button id="resetButton" class="ghost" type="button">Xóa bộ lọc</button>
         </form>
 
         <p id="rangeError" class="error" role="alert"></p>
         <p>Thời gian theo giờ lưu trong ứng dụng, gồm cả hai mốc biên.</p>
     </section>
 
-    <section>
+    <section class="card" id="auditResults" tabindex="-1" aria-label="Kết quả nhật ký" data-permission="audit" hidden="">
+        <div class="section-heading"><h2>Kết quả tra cứu</h2></div>
         <p id="message" role="status" aria-live="polite"></p>
 
         <div class="table-wrap" tabindex="0" role="region" aria-label="Bảng nhật ký hệ thống">
@@ -101,7 +91,7 @@
             </table>
         </div>
 
-        <div class="controls">
+        <nav class="controls" aria-label="Phân trang nhật ký">
             <button id="previousButton" type="button" disabled>
                 Trang trước
             </button>
@@ -109,10 +99,12 @@
             <button id="nextButton" type="button" disabled>
                 Trang sau
             </button>
-        </div>
+        </nav>
     </section>
+<footer class="page-footer">Nhật ký hệ thống <span>Nhóm 5</span></footer>
 </main>
+</div>
 
-<script src="/audit-logs.js" defer></script>
+<script src="/session.js" defer></script><script src="/audit-logs.js" defer></script>
 </body>
 </html>

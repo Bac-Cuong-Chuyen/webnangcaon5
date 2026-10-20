@@ -1,3 +1,4 @@
+let auditIdentity=null, auditVersion=0;
 
     const element = id => document.getElementById(id);
     let currentPage = 0;
@@ -41,6 +42,7 @@
         });
 
         if (response.status === 401) {
+            document.dispatchEvent(new Event("session:changed"));
             throw new Error("HTTP 401 — Vui lòng đăng nhập.");
         }
 
@@ -64,6 +66,7 @@
     }
 
     async function loadPage(page) {
+        const requestVersion=auditVersion;
         if (busy) return;
         busy = true;
         clearResults();
@@ -76,6 +79,7 @@
             const response = await request(
                 "/api/admin/audit-logs?" + params.toString());
             const data = await response.json();
+            if(requestVersion!==auditVersion) return;
 
             for (const log of data.content) {
                 const row = document.createElement("tr");
@@ -117,47 +121,14 @@
         }
     }
 
-    element("loginForm").addEventListener("submit", async event => {
-        event.preventDefault();
-        if (busy) return;
-        clearResults();
-        element("loginError").textContent = "";
-
-        const username = element("loginUsername").value.trim();
-        const password = element("loginPassword").value;
-        element("loginPassword").value = "";
-
-        try {
-            // Kết thúc phiên cũ trước khi thử tài khoản khác.
-            await request("/api/auth/logout", {method: "POST"});
-            element("accountStatus").textContent = "Chưa đăng nhập.";
-
-            const response = await request("/api/auth/login", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({username, password})
-            });
-
-            const account = await response.json();
-
-            element("accountStatus").textContent =
-                `Đã đăng nhập: ${account.username} — ${account.role}`;
-
-            await loadPage(0);
-        } catch (error) {
-            element("loginError").textContent = error.message;
-            element("loginUsername").focus();
-        }
-    });
-
     element("logoutButton").addEventListener("click", async () => {
         if (busy) return;
 
         try {
             await request("/api/auth/logout", {method: "POST"});
             clearResults();
-            element("loginPassword").value = "";
             element("accountStatus").textContent = "Đã đăng xuất.";
+            document.dispatchEvent(new Event("session:changed"));
             showMessage("Đã kết thúc phiên đăng nhập.");
         } catch (error) {
             showMessage(error.message, true);
@@ -220,8 +191,18 @@
     for (const id of ["fromTime", "toTime"]) {
         element(id).addEventListener("input", clearRangeError);
     }
-    for (const id of ["loginUsername", "loginPassword"]) {
-        element(id).addEventListener("input", () => {
-            element("loginError").textContent = "";
-        });
-    }
+    document.addEventListener('session:updated', event => {
+        const account=event.detail.account;
+        const identity=account?account.username+':'+account.role:null;
+        if(identity===auditIdentity) return;
+        auditIdentity=identity; ++auditVersion; clearResults();
+        element('accountStatus').textContent=account
+            ? `Đã đăng nhập: ${account.username} — ${AppSession.label(account)}` : 'Chưa đăng nhập.';
+        if(!account) showMessage('Vui lòng đăng nhập để xem nhật ký.');
+    });
+    AppSessionReady.then(account => {
+        if (!account) return;
+        element("accountStatus").textContent = `Đã đăng nhập: ${account.username} — ${AppSession.label(account)}`;
+        if (AppSession.can('audit',account)) loadPage(0);
+        else showMessage('Tài khoản hiện tại không có quyền xem nhật ký hệ thống.',true);
+    });
