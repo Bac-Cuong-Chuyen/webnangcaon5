@@ -35,7 +35,7 @@
         input, select, button {
             padding: 9px;
             font: inherit;
-            border: 1px solid #b8c2d0;
+            border: 1px solid #74818f;
             border-radius: 5px;
         }
 
@@ -82,3 +82,19 @@
             margin-top: 16px;
             align-items: center;
         }
+
+/* B09: visible focus and form controls at narrow widths. */
+* { box-sizing: border-box; }
+input, select, button { min-height: 44px; max-width: 100%; }
+input, select { background: #fff; color: #172033; }
+label { min-width: 0; max-width: 100%; }
+button:focus-visible, input:focus-visible, select:focus-visible,
+[tabindex]:focus-visible { outline: 3px solid #175cd3; outline-offset: 3px; }
+caption { text-align: left; font-weight: bold; margin-bottom: 10px; }
+.table-wrap table { min-width: 640px; }
+#rangeError:empty, #loginError:empty { display: none; }
+@media (max-width: 480px) {
+    body { padding: 12px; }
+    section { padding: 12px; }
+    form > label { flex: 1 1 100%; }
+}

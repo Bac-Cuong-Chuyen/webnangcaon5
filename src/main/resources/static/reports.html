@@ -20,8 +20,8 @@
 <section id="loginCard" class="card" aria-label="Đăng nhập">
   <p class="login-intro">Đăng nhập để xem báo cáo.</p>
   <form id="loginForm" class="grid">
-    <div><label for="lu">Tên đăng nhập</label><input id="lu" name="username" required type="text" autocomplete="username"></div>
-    <div><label for="lp">Mật khẩu</label><input id="lp" name="password" required type="password" autocomplete="current-password"></div>
+    <div><label for="lu">Tên đăng nhập</label><input id="lu" aria-describedby="loginErr" name="username" required type="text" autocomplete="username"></div>
+    <div><label for="lp">Mật khẩu</label><input id="lp" aria-describedby="loginErr" name="password" required type="password" autocomplete="current-password"></div>
     <div><button id="loginBtn" type="submit">Đăng nhập</button></div>
   </form>
   <p id="loginErr" class="err" role="alert"></p>
@@ -33,10 +33,11 @@
 
 <section class="card" aria-label="Bộ lọc báo cáo">
   <form id="filterForm" class="grid">
-    <div><label for="fFrom">Từ ngày</label><input id="fFrom" required type="date" value="2026-10-14"></div>
-    <div><label for="fTo">Đến ngày</label><input id="fTo" required type="date" value="2026-10-15"></div>
+    <div><label for="fFrom">Từ ngày</label><input id="fFrom" aria-describedby="rangeErr" required type="date" value="2026-10-14"></div>
+    <div><label for="fTo">Đến ngày</label><input id="fTo" aria-describedby="rangeErr" required type="date" value="2026-10-15"></div>
     <div><button id="applyBtn" type="submit">Xem báo cáo</button></div>
   </form>
+  <p id="rangeErr" class="err" role="alert"></p>
   <label class="demo-option"><input id="demoChk" type="checkbox"> Chế độ dữ liệu mẫu (chỉ để thử giao diện)</label>
 </section>
 
