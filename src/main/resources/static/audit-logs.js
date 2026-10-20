@@ -121,6 +121,7 @@
         event.preventDefault();
         if (busy) return;
         clearResults();
+        element("loginError").textContent = "";
 
         const username = element("loginUsername").value.trim();
         const password = element("loginPassword").value;
@@ -144,7 +145,8 @@
 
             await loadPage(0);
         } catch (error) {
-            showMessage(error.message, true);
+            element("loginError").textContent = error.message;
+            element("loginUsername").focus();
         }
     });
 
@@ -166,14 +168,18 @@
         event.preventDefault();
         if (busy) return;
 
+        clearRangeError();
         const fromTime = element("fromTime").value;
         const toTime = element("toTime").value;
 
         if (fromTime && toTime && fromTime > toTime) {
             clearResults();
-            showMessage(
-                "Thời điểm bắt đầu phải nhỏ hơn hoặc bằng thời điểm kết thúc.",
-                true);
+            element("fromTime").setAttribute("aria-invalid", "true");
+            element("toTime").setAttribute("aria-invalid", "true");
+            element("rangeError").textContent =
+                "Thời điểm bắt đầu phải trước hoặc trùng thời điểm kết thúc. Hãy sửa một trong hai mốc rồi tra cứu lại.";
+            showMessage("Chưa tra cứu do khoảng thời gian không hợp lệ.", true);
+            element("fromTime").focus();
             return;
         }
 
@@ -192,6 +198,7 @@
     element("resetButton").addEventListener("click", () => {
         if (busy) return;
         element("filterForm").reset();
+        clearRangeError();
         activeFilters = new URLSearchParams({size: "20"});
         loadPage(0);
     });
@@ -203,3 +210,18 @@
     element("nextButton").addEventListener("click", () => {
         loadPage(currentPage + 1);
     });
+
+    function clearRangeError() {
+        element("rangeError").textContent = "";
+        for (const id of ["fromTime", "toTime"]) {
+            element(id).removeAttribute("aria-invalid");
+        }
+    }
+    for (const id of ["fromTime", "toTime"]) {
+        element(id).addEventListener("input", clearRangeError);
+    }
+    for (const id of ["loginUsername", "loginPassword"]) {
+        element(id).addEventListener("input", () => {
+            element("loginError").textContent = "";
+        });
+    }

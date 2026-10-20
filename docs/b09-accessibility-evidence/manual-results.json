@@ -1,0 +1,97 @@
+{
+  "dateLocal": "2026-10-20",
+  "environment": "localhost:8081; Microsoft Edge; user operated application",
+  "branchReported": "feature/b09-accessibility-review",
+  "commitAtObservation": null,
+  "cases": [
+    {
+      "id": "A11Y-M01",
+      "name": "Reversed report dates show correction and focus From",
+      "status": "PASS",
+      "evidenceType": "screenshot",
+      "evidence": [
+        "report-invalid-dates.png"
+      ]
+    },
+    {
+      "id": "A11Y-M02",
+      "name": "Corrected dates 01–15/10/2026 reload 5000 rows",
+      "status": "PASS",
+      "evidenceType": "screenshot",
+      "evidenceOutsideThisFolder": "B09_ACCESSIBILITY_SUA_NGAY_TAI_LAI_5000_PHONG_TO_LOCAL_20261020.png"
+    },
+    {
+      "id": "A11Y-M03",
+      "name": "Report layout and pagination at browser zoom 200%",
+      "status": "PASS",
+      "evidenceType": "screenshots",
+      "evidence": [
+        "report-zoom-200.png",
+        "report-zoom-page-2.png"
+      ],
+      "limitation": "Observed header/filter/table/footer states; not every responsive state."
+    },
+    {
+      "id": "A11Y-M04",
+      "name": "Excel downloads at zoom 200%",
+      "status": "PASS",
+      "evidenceType": "user confirmation",
+      "userReply": "tải đc",
+      "limitation": "No new workbook content inspection for this download."
+    },
+    {
+      "id": "A11Y-M05",
+      "name": "Keyboard logout/login/report tabs/filters/table/pagination; visible focus and exit table",
+      "status": "PASS",
+      "evidenceType": "user confirmation",
+      "userReply": "ok hết"
+    },
+    {
+      "id": "A11Y-M06",
+      "name": "Narrator reads report date labels and reversed-date error",
+      "status": "PASS",
+      "evidenceType": "user confirmation",
+      "userReply": "ok hết",
+      "limitation": "No audio recording; scoped to reported label/error scenario."
+    },
+    {
+      "id": "A11Y-M07",
+      "name": "Reversed audit times show corrective error and focus From",
+      "status": "PASS",
+      "evidenceType": "screenshot",
+      "evidence": [
+        "audit-invalid-times.png"
+      ]
+    },
+    {
+      "id": "A11Y-M08",
+      "name": "Audit reset clears both dates and prior range error",
+      "status": "PASS",
+      "evidenceType": "user confirmation",
+      "userReply": "đã xóa ô và hết lỗi ngày"
+    }
+  ],
+  "images": [
+    {
+      "path": "report-invalid-dates.png",
+      "sha256": "6168d82ca0344c93048a99ec1e730a8ab03d5292f3ad671499c291295f42ed35"
+    },
+    {
+      "path": "report-zoom-200.png",
+      "sha256": "8d8bad1a349c443a58cc6445ff9cc29062dc92aef2651a9e1cdecbe143a8ef70"
+    },
+    {
+      "path": "report-zoom-page-2.png",
+      "sha256": "af26541d8e4ce383f787442e96a90670dd7540d9b2667bdedf4214d7afaa60f6"
+    },
+    {
+      "path": "audit-invalid-times.png",
+      "sha256": "e829a8ff809e527b570029e16895c9d7f2056439e5ed2a856daa0ccc3e00a7a3"
+    }
+  ],
+  "limitations": [
+    "Does not certify complete WCAG 2.1 AA conformance.",
+    "Online Render deployment is separate and still awaiting TV5 verification.",
+    "Fixture checks are recorded separately from user observations."
+  ]
+}

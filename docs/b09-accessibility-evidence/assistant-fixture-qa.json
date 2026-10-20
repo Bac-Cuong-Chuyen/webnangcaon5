@@ -1,0 +1,115 @@
+{
+  "checks": [
+    "5000 rows: full totals, 50 table rows, 20 chart bars",
+    "Page 2 has rows51-100; full total unchanged",
+    "Excel exports all5000 rows; text cell preserved; filename uses loaded dates",
+    "Reload restores user and logout from session endpoint",
+    "Keyboard End selects transfer tab with one tab stop",
+    "360px viewport has no page horizontal overflow",
+    "Logout clears data and disables export",
+    "Enter submits login; ADMIN403 retains logout UI",
+    "Expired session clears old identity and requests login",
+    "Report reversed dates: linked corrective error, both invalid, focus, no API; corrected dates reload",
+    "Reports light/dark: measured 10 text and form-border contrast pairs meet scoped thresholds",
+    "320 CSS px: reports page fits; table can receive and release keyboard focus",
+    "Login 401: linked generic credential error, focus and invalid state clear on edit",
+    "Audit at 320 CSS px: fits, table semantics/focus, invalid dates block API, reset reloads",
+    "Audit login failure is linked to credentials and focuses username",
+    "Text-spacing fixture: both pages at 1280/320 CSS px fit; enlarged spacing does not clip active button text",
+    "No uncaught browser JavaScript errors"
+  ],
+  "scope": "Assistant QA; isolated fixture server; not user local database evidence",
+  "contrast": [
+    {
+      "colorScheme": "light",
+      "name": "control vs input",
+      "a": "rgb(116, 129, 143)",
+      "b": "rgb(244, 245, 247)",
+      "ratio": 3.646416295584114,
+      "minimum": 3
+    },
+    {
+      "colorScheme": "light",
+      "name": "control vs card",
+      "a": "rgb(116, 129, 143)",
+      "b": "rgb(255, 255, 255)",
+      "ratio": 3.9777717870445533,
+      "minimum": 3
+    },
+    {
+      "colorScheme": "light",
+      "name": "body text",
+      "a": "rgb(24, 33, 43)",
+      "b": "rgb(255, 255, 255)",
+      "ratio": 16.263131530883538,
+      "minimum": 4.5
+    },
+    {
+      "colorScheme": "light",
+      "name": "muted text",
+      "a": "rgb(86, 97, 112)",
+      "b": "rgb(255, 255, 255)",
+      "ratio": 6.288300988795379,
+      "minimum": 4.5
+    },
+    {
+      "colorScheme": "light",
+      "name": "button text",
+      "a": "rgb(244, 245, 247)",
+      "b": "rgb(15, 95, 140)",
+      "ratio": 6.341037819997533,
+      "minimum": 4.5
+    },
+    {
+      "colorScheme": "dark",
+      "name": "control vs input",
+      "a": "rgb(126, 139, 157)",
+      "b": "rgb(16, 21, 27)",
+      "ratio": 5.298145845797995,
+      "minimum": 3
+    },
+    {
+      "colorScheme": "dark",
+      "name": "control vs card",
+      "a": "rgb(126, 139, 157)",
+      "b": "rgb(24, 32, 42)",
+      "ratio": 4.744036740040151,
+      "minimum": 3
+    },
+    {
+      "colorScheme": "dark",
+      "name": "body text",
+      "a": "rgb(230, 235, 241)",
+      "b": "rgb(24, 32, 42)",
+      "ratio": 13.69804650810253,
+      "minimum": 4.5
+    },
+    {
+      "colorScheme": "dark",
+      "name": "muted text",
+      "a": "rgb(154, 167, 182)",
+      "b": "rgb(24, 32, 42)",
+      "ratio": 6.706647001897267,
+      "minimum": 4.5
+    },
+    {
+      "colorScheme": "dark",
+      "name": "button text",
+      "a": "rgb(16, 21, 27)",
+      "b": "rgb(92, 184, 230)",
+      "ratio": 8.255778028546333,
+      "minimum": 4.5
+    }
+  ],
+  "status": "PASS",
+  "dateLocal": "2026-10-20",
+  "limitations": "Fixture data and mocked HTTP responses; not a run against user H2 or Render. Text spacing checks cover page overflow and active button text clipping, not every visual element or assistive technology.",
+  "staticSourceSHA256": {
+    "src/main/resources/static/reports.html": "E02130F7660DEC6938F76A9106BD1F875FEC181DEA7727063C602B56D46F1B2B",
+    "src/main/resources/static/reports.css": "0651653C59706830D4B95613F75928A1D0FD79A711C4EA7DC38CC6E339F4BFA3",
+    "src/main/resources/static/reports.js": "E4BFDD73F3C932E4305EB679298702B245135F27FF60E59D89ED746AD64593D2",
+    "src/main/resources/static/audit-logs.html": "9801960CD9F668A5BFDDFED153B62DE1DE4194167934D708F0F849F46CB040D7",
+    "src/main/resources/static/audit-logs.css": "02D4D0B9D6DF93116BF8040C28EFA252E18B09841D557F514AB1D26D7F81745D",
+    "src/main/resources/static/audit-logs.js": "05A28945A42013A4DFDA1BBE55EE4D01B7D8A12CAA98FB4F018AD57DD3764ADC"
+  }
+}
