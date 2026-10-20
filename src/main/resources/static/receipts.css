@@ -1,0 +1,13 @@
+.receipt-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.receipt-tabs button { background: var(--card); color: var(--mut); border-color: var(--br); }.receipt-tabs button[aria-selected=true] { background: var(--ac); border-color: var(--ac); color: #fff; }
+.receipt-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin: 20px 0; }.receipt-search-field { flex: 1; min-width: min(220px,100%); }
+.receipt-table { max-height: 580px; }.receipt-table table { min-width: 760px; }.receipt-table th { position: sticky; top: 0; z-index: 1; white-space: nowrap; }.receipt-table td { overflow-wrap: anywhere; max-width: 260px; }
+.receipt-table button { padding: 7px 10px; min-height: 36px; font-size: 12px; margin: 3px; white-space: nowrap; }
+.receipt-status { background: var(--soft); color: var(--ac); border-radius: 5px; padding: 4px 8px; white-space: nowrap; }.receipt-status.draft { background: var(--warnbg); color: var(--warn); }
+#receiptMessage,#transferMessage { min-height: 24px; }.success-note:empty { display: none; }.success-note { padding: 12px; background: var(--soft); border-radius: 6px; }
+dialog { width: min(540px,calc(100% - 32px)); max-height: calc(100vh - 40px); padding: 26px; border: 1px solid var(--br); border-radius: 12px; background: var(--card); color: var(--tx); box-shadow: 0 20px 80px #0003; }dialog::backdrop { background: #15233488; }dialog h2 { font-size: 21px; }dialog input { margin-bottom: 16px; }
+.receipt-dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; margin-top: 20px; }.receipt-data { display: grid; grid-template-columns: minmax(100px,1fr) minmax(0,2fr); gap: 12px; }.receipt-data dt { color: var(--mut); }.receipt-data dd { margin: 0; overflow-wrap: anywhere; }
+@media(max-width:760px) { .receipt-tabs button { flex: 1; padding: 10px; }.receipt-toolbar>div { flex-basis: 100%; }.receipt-toolbar button { flex: 1; }.receipt-dialog-actions button { flex: 1; }dialog { padding: 20px; } }
+@media(prefers-color-scheme:dark) { .receipt-tabs button[aria-selected=true] { color: #101a28; } }
+
+.entity-picker{border:1px solid var(--br);border-radius:8px;padding:12px;margin:0 0 16px;min-width:0}.picker-search{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap}.picker-search input{flex:1;min-width:100px;margin:0}.picker-search span{flex:1;font-size:12px}#createDialog select{width:100%;min-width:0;margin-bottom:16px}#moreWarehouses{display:block;margin-bottom:16px}#createDialog{overflow-y:auto}

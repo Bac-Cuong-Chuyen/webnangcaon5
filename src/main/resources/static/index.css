@@ -1,4 +1,19 @@
+.welcome-card { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 24px; padding: 30px 34px; border: 1px solid #d6e4f4; border-radius: 11px; background: #eaf2fc; margin-bottom: 28px; }
+.welcome-label { color: #315b86; font-size: 10px; font-weight: 700; letter-spacing: 1.3px; }
+.welcome-card h2 { font-size: 29px; letter-spacing: -.8px; line-height: 1.35; margin: 12px 0; color: #173b64; }
+.welcome-card p { max-width: 440px; font-size: 13px; color: #486482; margin: 0 0 22px; }
+.welcome-card .button { background: #225f9e; border-color: #225f9e; color: white; }
+.warehouse-art { max-width: 330px; width: 100%; justify-self: center; }.warehouse-art svg { display: block; width: 100%; height: auto; }
+.home-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; align-items: start; }
+.quick-card { display: flex; align-items: flex-start; gap: 16px; background: var(--card); border: 1px solid var(--br); border-radius: 9px; padding: 20px; text-decoration: none; color: var(--tx); margin-bottom: 14px; box-shadow: var(--shadow); }
+.quick-card:hover { border-color: var(--control-br); }.quick-card p { color: var(--mut); font-size: 12px; margin: 6px 0 10px; }
+.quick-icon { display: grid; place-items: center; background: var(--soft); color: var(--ac); width: 44px; height: 44px; border-radius: 9px; flex: 0 0 auto; }.quick-icon svg { width: 23px; height: 23px; }
+.quick-icon.neutral { background: var(--bg); color: var(--mut); }.card-link { display: flex; align-items: center; gap: 8px; color: var(--ac); font-size: 11px; font-weight: 600; }.card-link svg { width: 16px; height: 16px; }
+.access-note { display: block; color: var(--mut); font-size: 10px; margin: 0 0 10px; }
+.guide .muted { font-size: 12px; margin: 5px 0 22px; }.steps { list-style: none; padding: 0; margin: 0; }.steps li { display: flex; align-items: flex-start; gap: 14px; padding-bottom: 22px; }.steps li:last-child { padding-bottom: 0; }
+.steps li > span { color: var(--ac); background: var(--soft); border-radius: 50%; width: 30px; height: 30px; flex: 0 0 auto; display: grid; place-items: center; font-size: 10px; font-weight: 700; }.steps h3 { font-size: 12px; }.steps p { color: var(--mut); font-size: 11px; margin: 4px 0 0; }
+.guide-note { margin: 22px 0 0; border-top: 1px solid var(--br); padding-top: 14px; font-size: 10px; color: var(--mut); }
+@media (max-width: 1000px) { .home-grid { grid-template-columns: minmax(0, 1fr); }.welcome-card { padding: 26px; }.welcome-card h2 { font-size: 26px; } }
+@media (max-width: 600px) { .welcome-card { grid-template-columns: minmax(0, 1fr); padding: 24px; gap: 10px; }.warehouse-art { display: none; }.welcome-card h2 { font-size: 26px; }.home-grid { gap: 12px; }.quick-card { padding: 18px; gap: 12px; } }
 
-    body { font-family: system-ui, sans-serif; display: grid; place-items: center; min-height: 100vh; margin: 0; background: #f4f6f8; }
-    main { text-align: center; padding: 2rem; }
-    h1 { font-size: 1.6rem; }
+.overview-filter{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:16px 0}.overview-filter>div{flex:1;min-width:140px}.overview-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.overview-metric{border:1px solid var(--br);background:var(--bg);padding:18px;border-radius:8px;min-width:0}.overview-metric strong{display:block;font-size:28px;color:var(--ac);overflow-wrap:anywhere}.overview-metric p{margin:8px 0 0;color:var(--mut)}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow"><title>Phiếu kho | Kho hàng</title>
+  <meta name="description" content="Lập và tra cứu phiếu nhập, xuất và xử lý chuyển kho theo quyền tài khoản.">
+  <link rel="stylesheet" href="/workspace.css"><link rel="stylesheet" href="/receipts.css">
+  <script src="/session.js" defer></script><script src="/entity-labels.js" defer></script><script src="/receipts.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#receiptContent">Đến phiếu kho</a>
+<noscript><p>Cần bật JavaScript để sử dụng phiếu kho.</p></noscript>
+<div class="app-shell">
+<aside class="sidebar" aria-label="Thanh điều hướng">
+  <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">K</span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
+  <p class="nav-label">KHÔNG GIAN LÀM VIỆC</p>
+  <nav class="app-nav" aria-label="Điều hướng chính">
+    <a href="/">Tổng quan</a><a href="/management.html" data-permission="management" hidden>Quản lý kho</a>
+    <a href="/receipts.html" data-permission="receipts" aria-current="page" hidden>Phiếu kho</a>
+    <a href="/accounts.html" data-permission="accounts" hidden>Tài khoản</a><a href="/reports.html" data-permission="reports" hidden>Báo cáo kho</a><a href="/audit-logs.html" data-permission="audit" hidden>Nhật ký hệ thống</a>
+    <a href="/login.html?next=/receipts.html" data-guest>Đăng nhập</a>
+  </nav>
+  <div class="sidebar-footer"><span class="team-mark">N5</span><div><strong>Nhóm 5</strong><small>Thiết kế Web nâng cao</small></div></div>
+</aside>
+<main class="app-main">
+  <div class="topbar"><p>Không gian làm việc <span>/</span> <strong>Phiếu kho</strong></p><div class="topbar-account" data-member hidden><a href="/" class="topbar-link"><span data-account-name></span></a><button type="button" class="ghost" data-logout>Đăng xuất</button><span data-logout-error class="error" role="alert"></span></div></div>
+  <header class="page-heading"><div><p class="eyebrow">NGHIỆP VỤ KHO</p><h1>Phiếu kho</h1><p class="page-description">Lập phiếu nháp, đối chiếu thông tin và duyệt theo quyền.</p></div><span class="page-tag" data-account-role></span></header>
+  <section id="receiptGate" class="card" hidden><h2>Đăng nhập để tiếp tục</h2><p>Dùng tài khoản của bạn để truy cập phiếu kho.</p><a class="button" href="/login.html?next=/receipts.html">Đến trang đăng nhập</a></section>
+  <p id="receiptSessionError" class="error" role="alert"></p>
+  <div id="receiptContent" hidden>
+    <nav class="receipt-tabs" role="tablist" aria-label="Loại phiếu">
+      <button id="tab-imports" type="button" role="tab" aria-selected="true" aria-controls="receiptPanel" tabindex="0" data-kind="imports">Nhập kho</button>
+      <button id="tab-exports" type="button" role="tab" aria-selected="false" aria-controls="receiptPanel" tabindex="-1" data-kind="exports">Xuất kho</button>
+      <button id="tab-transfers" type="button" role="tab" aria-selected="false" aria-controls="receiptPanel" tabindex="-1" data-kind="transfers" hidden>Chuyển kho</button>
+    </nav>
+    <section id="receiptPanel" class="card" role="tabpanel" aria-labelledby="tab-imports" aria-busy="false">
+      <div class="section-heading"><div><h2 id="receiptTitle">Phiếu nhập kho</h2><p id="receiptNote" class="muted"></p></div><button id="createReceipt" type="button" hidden>Lập phiếu nhập</button></div>
+      <p id="writeNotice" role="status" class="success-note"></p>
+      <div id="receiptListing">
+        <form id="receiptSearch" class="receipt-toolbar">
+          <div><label for="viewMode">Nội dung</label><select id="viewMode"><option value="receipts">Phiếu kho</option><option value="lines">Dòng hàng</option></select></div>
+          <div class="receipt-search-field"><label for="receiptLookup" id="lookupLabel">Tra cứu theo ID phiếu</label><input id="receiptLookup" type="search" placeholder="Nhập ID hoặc để trống xem danh sách"></div>
+          <button type="submit">Tra cứu</button><button id="receiptReset" type="button" class="ghost">Làm mới</button>
+          <div><label for="receiptSize">Số dòng</label><select id="receiptSize"><option value="20">20</option><option value="50">50</option><option value="100">100</option></select></div>
+        </form>
+        <p id="receiptMessage" role="status" aria-live="polite"></p>
+        <div class="table-wrap receipt-table" role="region" aria-label="Bảng phiếu và dòng hàng" tabindex="0"><table><caption id="receiptCaption">Phiếu nhập kho</caption><thead id="receiptHead"></thead><tbody id="receiptRows"></tbody></table></div>
+        <nav class="pager" aria-label="Phân trang phiếu"><button id="receiptPrev" type="button" class="ghost" disabled>Trang trước</button><span id="receiptPage" role="status">Chưa có dữ liệu</span><button id="receiptNext" type="button" class="ghost" disabled>Trang sau</button></nav>
+      </div>
+      <div id="transferPanel" hidden>
+        <p class="muted">Lập phiếu mới hoặc xử lý phiếu chuyển kho theo ID được bàn giao. Danh sách phiếu chuyển chưa có ở màn hình này.</p>
+        <form id="transferActionForm" class="receipt-toolbar"><div class="receipt-search-field"><label for="transferActionId">ID phiếu chuyển cần xử lý</label><input id="transferActionId" type="number" min="1" max="9007199254740991" step="1" required></div><button id="completeTransfer" type="submit" data-action="complete">Hoàn tất phiếu</button><button id="cancelTransfer" type="submit" class="ghost" data-action="cancel">Hủy phiếu nháp</button></form>
+        <p id="transferMessage" role="status" aria-live="polite"></p>
+        <section id="lastTransfer" hidden aria-labelledby="lastTransferTitle"><h3 id="lastTransferTitle">Phiếu vừa thao tác</h3><dl id="lastTransferData" class="receipt-data"></dl></section>
+      </div>
+    </section>
+  </div>
+  <footer class="page-footer">Phiếu nhập xuất và chuyển kho <span>Nhóm 5</span></footer>
+</main>
+</div>
+<dialog id="createDialog" aria-labelledby="createTitle" aria-describedby="createNote">
+  <form id="createForm"><h2 id="createTitle">Lập phiếu nhập</h2><p id="createNote" class="muted">Phiếu mới ở trạng thái nháp, chưa thay đổi tồn kho.</p>
+    <label for="receiptCode">Mã phiếu</label><input id="receiptCode" maxlength="120" required>
+    <fieldset class="entity-picker"><legend>Sản phẩm</legend><label for="productKeyword">Tìm tên hoặc SKU</label><div class="picker-search"><input id="productKeyword" type="search" maxlength="120" placeholder="Nhập tên hoặc SKU"><button id="findProduct" type="button">Tìm</button></div><label for="receiptProduct">Chọn sản phẩm trong kết quả</label><select id="receiptProduct" required><option value="">Chưa chọn sản phẩm</option></select><div class="picker-search"><button id="productPrev" class="ghost" type="button" disabled>Trước</button><span id="productStatus" role="status"></span><button id="productNext" class="ghost" type="button" disabled>Sau</button></div></fieldset>
+    <div id="singleWarehouse"><label for="receiptWarehouse">Kho</label><select id="receiptWarehouse"><option value="">Chọn kho</option></select></div>
+    <div id="transferWarehouses" hidden><label for="transferFrom">Kho nguồn</label><select id="transferFrom"><option value="">Chọn kho</option></select><label for="transferTo">Kho đích</label><select id="transferTo"><option value="">Chọn kho</option></select></div>
+    <p id="warehouseStatus" role="status"></p><button id="moreWarehouses" type="button" class="ghost">Tải thêm kho</button><label for="receiptQuantity">Số lượng</label><input id="receiptQuantity" type="number" min="1" max="2147483647" step="1" required>
+    <p><a href="/management.html" target="_blank" rel="noopener">Tra cứu sản phẩm và kho ↗</a></p><p id="createError" class="error" role="alert"></p>
+    <div class="receipt-dialog-actions"><button id="dismissCreate" type="button" class="ghost">Hủy</button><button id="submitReceipt" type="submit">Lưu phiếu nháp</button></div>
+  </form>
+</dialog>
+<dialog id="receiptDetail" aria-labelledby="detailTitle"><h2 id="detailTitle">Thông tin phiếu</h2><dl id="detailData" class="receipt-data"></dl><h3>Hàng trong phiếu</h3><p id="detailScanStatus" role="status" aria-live="polite"></p><button id="scanDetailLines" type="button" class="ghost">Đối chiếu 100 dòng tiếp theo</button><div class="table-wrap"><table><caption>Dòng hàng đã tìm thấy của phiếu</caption><thead><tr><th scope="col">ID dòng</th><th scope="col">Sản phẩm</th><th scope="col">Số lượng</th></tr></thead><tbody id="detailLines"></tbody></table></div><p class="muted">Danh sách được phân trang chung. Các lượt đối chiếu độc lập; nếu dữ liệu đang thay đổi, đóng và mở lại để kiểm tra từ đầu.</p><div class="receipt-dialog-actions"><button id="closeDetail" type="button" class="ghost">Đóng</button></div></dialog>
+<dialog id="confirmReceipt" aria-labelledby="confirmTitle" aria-describedby="confirmText"><h2 id="confirmTitle">Xác nhận thao tác</h2><p id="confirmText"></p><p id="confirmError" class="error" role="alert"></p><div class="receipt-dialog-actions"><button id="dismissConfirm" type="button" class="ghost">Quay lại</button><button id="submitConfirm" type="button">Xác nhận</button></div></dialog>
+<dialog id="draftDialog" aria-labelledby="draftTitle" aria-describedby="draftNote"><form id="draftForm">
+<h2 id="draftTitle">Sửa thông tin phiếu nháp</h2><p id="draftNote" class="muted">Cập nhật mã và ngày lập. Sản phẩm, số lượng và tồn kho giữ nguyên.</p>
+<label for="draftCode">Mã phiếu</label><input id="draftCode" maxlength="120" required>
+<label for="draftDate">Ngày lập</label><input id="draftDate" type="date" required>
+<p id="draftError" class="error" role="alert"></p><div class="receipt-dialog-actions"><button id="cancelDraft" type="button" class="ghost">Hủy</button><button id="saveDraft" type="submit">Lưu thông tin</button></div>
+</form></dialog></body>
+</html>

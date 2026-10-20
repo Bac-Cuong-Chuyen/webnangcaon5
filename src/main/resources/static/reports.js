@@ -71,8 +71,8 @@ function refreshTabs(){
 }
 function showLogin(show){$('loginCard').hidden=!show;}
 function showUser(u){
-  currentUser=u;const box=$('userBox');box.textContent='';if(!u)return;
-  const name=document.createElement('span');name.textContent=(u.fullName||u.username)+(u.role?' ('+u.role+')':'');
+  currentUser=u;document.dispatchEvent(new Event('session:changed'));const box=$('userBox');box.textContent='';if(!u)return;
+  const name=document.createElement('span');name.textContent=(u.fullName||u.username)+(u.role?' · '+(window.AppSession?AppSession.label(u):u.role):'');
   const button=document.createElement('button');button.type='button';button.className='ghost';button.textContent='Đăng xuất';
   button.onclick=async()=>{
     button.disabled=true;
@@ -80,38 +80,20 @@ function showUser(u){
       const response=await secureFetch('/api/auth/logout',{method:'POST'});
       if(!response.ok)throw new Error('logout');
       ++seq;showUser(null);clearResult();$('demoChk').checked=false;isDemo=false;$('demoBanner').hidden=true;
-      $('reportPanel').setAttribute('aria-busy','false');setStatus('Đã đăng xuất.');showLogin(true);$('lu').focus();
+      $('reportPanel').setAttribute('aria-busy','false');setStatus('Đã đăng xuất.');showLogin(true);$('reportLoginLink').focus();
     }catch(e){setStatus('Không đăng xuất được. Vui lòng thử lại.','err');button.disabled=false;}
   };
   box.append(name,button);
 }
-$('loginForm').onsubmit=async event=>{
-  event.preventDefault();$('loginErr').textContent='';$('loginBtn').disabled=true;
-  $('lu').removeAttribute('aria-invalid');$('lp').removeAttribute('aria-invalid');
-  try{
-    const response=await secureFetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({username:$('lu').value.trim(),password:$('lp').value})});
-    if(!response.ok){
-      $('loginErr').textContent=response.status===429?'Đăng nhập tạm thời bị giới hạn. Vui lòng thử lại sau.':
-        response.status===401?'Tên đăng nhập hoặc mật khẩu không đúng.':'Không đăng nhập được (HTTP '+response.status+').';
-      if(response.status===401){
-        $('lu').setAttribute('aria-invalid','true');$('lp').setAttribute('aria-invalid','true');$('lu').focus();
-      }
-      return;
-    }
-    showUser(await response.json());showLogin(false);$('lp').value='';$('applyBtn').focus();await load();
-  }catch(e){$('loginErr').textContent='Không kết nối được máy chủ.';}
-  finally{$('loginBtn').disabled=false;}
-};
 async function restoreSession(){
-  $('loginBtn').disabled=true;setStatus('Đang kiểm tra phiên đăng nhập…');
+  setStatus('Đang kiểm tra phiên đăng nhập…');
   try{
     const response=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'}});
     if(response.status===401){showUser(null);showLogin(true);setStatus('Cần đăng nhập để xem báo cáo.');return;}
     if(!response.ok)throw new Error('session');
     showUser(await response.json());showLogin(false);await load();
   }catch(e){showUser(null);showLogin(true);setStatus('Không kiểm tra được phiên đăng nhập. Vui lòng thử tải lại trang.','err');}
-  finally{$('loginBtn').disabled=false;}
+
 }
 async function load(){
   const cfg=REPORTS[tab],my=++seq,from=$('fFrom').value,to=$('fTo').value;
@@ -210,8 +192,14 @@ function clearRangeError(){
   $('fFrom').removeAttribute('aria-invalid');$('fTo').removeAttribute('aria-invalid');
 }
 ['fFrom','fTo'].forEach(id=>$(id).addEventListener('input',clearRangeError));
-['lu','lp'].forEach(id=>$(id).addEventListener('input',()=>{
-  $('loginErr').textContent='';$('lu').removeAttribute('aria-invalid');$('lp').removeAttribute('aria-invalid');
-}));
+
 $('filterForm').onsubmit=event=>{event.preventDefault();load();};$('demoChk').onchange=load;
 buildTabs();restoreSession();
+
+document.addEventListener('session:updated', event => {
+  const user=event.detail.account;
+  if(currentUser && (!user || user.username!==currentUser.username || user.role!==currentUser.role)) {
+    ++seq;clearResult();showUser(user);showLogin(!user);
+    setStatus(user?'Tài khoản đã thay đổi. Hãy chọn lại báo cáo.':'Phiên đã kết thúc. Vui lòng đăng nhập lại.');
+  }
+});
