@@ -1,0 +1,17 @@
+{
+  "CaseId": "B09-TC25",
+  "Result": "PASS",
+  "ObservedDate": "2026-10-19",
+  "ObservedBy": "Người dùng thực hiện và gửi ảnh trong phiên làm việc",
+  "Observation": "Ảnh đầu có header vàSKU đầu; ảnhcuối tạiC5001 cóngày2026-10-15,SKUB09-P04995,value100 vàcácdòngngaysautrống. Không đọcfilexlsxgốc haykiểmtoántừngô.",
+  "Evidence": [
+    {
+      "Path": "docs/b09-acceptance-evidence/excel-first-rows.png",
+      "SHA256": "f83b9003c1a94caf0a4d43c658bc37502c305f1fe67b46a379d5b576a2a51bab"
+    },
+    {
+      "Path": "docs/b09-acceptance-evidence/excel-row-5001.png",
+      "SHA256": "c42325251990a86f82ca2a30f87e629b7b9c60aeecf90a44d816ac83846af17b"
+    }
+  ]
+}

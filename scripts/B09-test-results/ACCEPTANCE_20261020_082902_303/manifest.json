@@ -1,0 +1,558 @@
+{
+    "CollectedAtUtc":  "2026-10-20T01:29:02.7852248Z",
+    "GitHeadAtCollection":  "c0638cae7dc9a33251d2558ec635a15b95e3887d",
+    "Mode":  "Reuse existing JUnit XML; tests were NOT rerun by this command",
+    "Scope":  "Local JVM/H2 test databases and manual browser Excel evidence; no production requests",
+    "Distribution":  {
+                         "BAO_CAO":  3,
+                         "NGOAI_LE":  6,
+                         "BAO_MAT":  7,
+                         "NGHIEP_VU":  9
+                     },
+    "Total":  25,
+    "Passed":  25,
+    "AutomatedMappings":  24,
+    "ManualEvidenceCases":  1,
+    "Note":  "JUnit source timestamps are preserved. Collection HEAD is not claimed as the historical test execution commit.",
+    "EvidenceHashes":  [
+                           {
+                               "Path":  "target/surefire-reports/TEST-com.example.supplychain.SecurityHardeningTest.xml",
+                               "SHA256":  "FFDCDA4B4E8918D6D93FEEDBD027D581996775B9D76605BAE894159CB30C3484",
+                               "Kind":  "JUnit XML source"
+                           },
+                           {
+                               "Path":  "target/surefire-reports/TEST-com.example.supplychain.StockApiValidationTest.xml",
+                               "SHA256":  "C5F0350EC7AE100CB7877D128CFA15FFD2EE9DA00D084634DC3491569FB648FB",
+                               "Kind":  "JUnit XML source"
+                           },
+                           {
+                               "Path":  "target/surefire-reports/TEST-com.example.supplychain.ReceiptApprovalWorkflowTest.xml",
+                               "SHA256":  "9817C23393E2FDF74B763AD7089EC168444D2B92186454D2B80FCA546E38048B",
+                               "Kind":  "JUnit XML source"
+                           },
+                           {
+                               "Path":  "target/surefire-reports/TEST-com.example.supplychain.B09PaginationTest.xml",
+                               "SHA256":  "CDABCD24B37F2CEFE3839E63BD666D6F0D57EE419189CEBB0DA91316B9D71BA9",
+                               "Kind":  "JUnit XML source"
+                           },
+                           {
+                               "Path":  "target/surefire-reports/TEST-com.example.supplychain.UserAccountPasswordIntegrityTest.xml",
+                               "SHA256":  "4BFCAC8FFF49ABFAB31659220290658CDECDE17B1058B8CDD4E6646DE8050F43",
+                               "Kind":  "JUnit XML source"
+                           },
+                           {
+                               "Path":  "target/surefire-reports/TEST-com.example.supplychain.ReceiptOwnershipTest.xml",
+                               "SHA256":  "95B319D66A0B77B7D0F1C8A3D79ED0042E8A643F9695E56F7483CC4E918C21EC",
+                               "Kind":  "JUnit XML source"
+                           },
+                           {
+                               "Path":  "target/surefire-reports/TEST-com.example.supplychain.B09SessionRestoreTest.xml",
+                               "SHA256":  "49AA22B8B0B306EE2DC6211C6895FFFE2C5D2F2ED39E3C89BE003B7697709378",
+                               "Kind":  "JUnit XML source"
+                           },
+                           {
+                               "Path":  "docs/b09-acceptance-evidence/excel-first-rows.png",
+                               "SHA256":  "F83B9003C1A94CAF0A4D43C658BC37502C305F1FE67B46A379D5B576A2A51BAB",
+                               "Kind":  "Previously observed manual evidence"
+                           },
+                           {
+                               "Path":  "docs/b09-acceptance-evidence/excel-row-5001.png",
+                               "SHA256":  "C42325251990A86F82CA2A30F87E629B7B9C60AEECF90A44D816AC83846AF17B",
+                               "Kind":  "Previously observed manual evidence"
+                           }
+                       ],
+    "SourceSnapshotAtCollection":  [
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\SupplyChainManagementApplication.java",
+                                           "SHA256":  "98231100964DB1DA6EDEA69590703D4777A0C00256A968623F93CDBD6A4B78A4"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\config\\AuditLoggingConfiguration.java",
+                                           "SHA256":  "5A402F0878557DCA9F85B3302C32A2CBA29E44491E656FBCBDC3C8DA2294D365"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\config\\B09StaticResourceConfiguration.java",
+                                           "SHA256":  "1C1C1028CDD4098348FDCDC64024D9EB73EED9799E56BC9C83608167FD6E4017"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\config\\BootstrapAdminConfiguration.java",
+                                           "SHA256":  "4A2172BB351CFE083F3CF94421E46CC725D29AC06AAE81D6A45281DEA4ED226A"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\config\\ReportCacheConfiguration.java",
+                                           "SHA256":  "6DF381647CE6C93A3F8F4006CCE7C4791DA1550B81F2C9E232FBC0C85A83162C"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\config\\ReportCacheInvalidation.java",
+                                           "SHA256":  "DD4564E40D5DF59BFCB4D8F21EE432AA6D89E077D2AAA61C09AB65989FAC3D1F"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\config\\SecurityConfig.java",
+                                           "SHA256":  "3B074A569A88037EF56E2FD47C5652C8A7EB12EED8852BB95E308712B0142E2A"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\AdminController.java",
+                                           "SHA256":  "14DBFF35219618B822B3CB6130B11C05729A2DCE4172C283335333A7CE1563DD"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\AuditLogController.java",
+                                           "SHA256":  "F8C790746B38707FA2E3E68395FA73466F6D1C3FD921E554BF010F2355E57779"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\AuthController.java",
+                                           "SHA256":  "A8F9F004D5A4D252AD114BE758B0457E5FD183AE34CE5E3F161CBAC1D0A59175"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\B09PublicPageController.java",
+                                           "SHA256":  "314EF06B3C03CFB02E7F7F74E7D48001060C80A69A75BD98472848AB026D9BCC"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\CsrfTokenController.java",
+                                           "SHA256":  "4150206A062D963BB307F2E525C1232A389D89D9CFA4F58B7781861C7A6C3609"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ExportController.java",
+                                           "SHA256":  "59392D542985FC6C525FF2F03B57D2F39C91F3B02D1F4B7F3E5E3897F52F7246"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ExportDetailController.java",
+                                           "SHA256":  "10FAF3F47C4C3A9220E7F5AFFF8E98214B3C5647D5FF04E288D946AF413B3F44"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ExportReceiptController.java",
+                                           "SHA256":  "1DD58DAA60EFF5796E6186D11557361640D957776861069CEC2B14EEF551537C"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ExportReportController.java",
+                                           "SHA256":  "B28A3520EEC1E8F50DDA9B0E4B9D36430A7A3F7BE5EC854AFD88AEC3B55443F7"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\FileUploadController.java",
+                                           "SHA256":  "36696A87F5849D018BEFBEAD2B2C6B200636B0D511D3E4D28D7036F2A02423E6"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ImportController.java",
+                                           "SHA256":  "A11823458F0F3A06D9BE2029A993BBF1636EE924FFE6583AB9C9668647220A29"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ImportDetailController.java",
+                                           "SHA256":  "0387AF6472515102CD9A8BC11F395694D2E4E23E9DB2D8502509F0A76E3DDE8F"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ImportReceiptController.java",
+                                           "SHA256":  "4A5F26C009E22177733DB108935E20E55DD52FB4438FE8CA34F9516AA49FC179"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ImportReportController.java",
+                                           "SHA256":  "33F235FC4837EB030C473DC62C26C23D8E50EA687B6EDD91F5D1B8CD2304A91E"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\InventoryController.java",
+                                           "SHA256":  "C9B21FF30807BE2E67E359582BBA5401162966681DD5BC8403ACDF6C4826F5C1"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ProductController.java",
+                                           "SHA256":  "A56C19954ABD7F035F7D3C77A7DBF6E418AD8ECB56CA64C35133FD2AE5AC10DC"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ProductSearchController.java",
+                                           "SHA256":  "95D70EF29828036C07F75112D5F7C143C8C91D5465F4D4F47361FF0B26AC04C9"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\ReportCacheDiagnosticsController.java",
+                                           "SHA256":  "4FCAC64E14A619B54279F821E84B0011ACBD6FD7AA3AAEF381E82FABC19814B0"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\TestController.java",
+                                           "SHA256":  "2FA24879A83267780F2ADBA296707692148984D3DB47894DAD22814F73FF1342"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\TransferController.java",
+                                           "SHA256":  "0A7D67E9D684C3981441C0D273BB644324ADCE6617BB6FAC7E86C6AD80A56166"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\TransferReportController.java",
+                                           "SHA256":  "556EC7549D5F9E751E3B20C32471F97B51092D47BB210431E3138201652DEAB1"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\UserAccountController.java",
+                                           "SHA256":  "BC3F068AF26C886FB61C4EAF36D6242914D011B2CE7DC0FE8D694705ECD8E0D2"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\UserController.java",
+                                           "SHA256":  "244E8CD19F67A2A9681510E8997B70495F1CEBA18D435A5AA418F4DDDBDE2352"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\controller\\WarehouseController.java",
+                                           "SHA256":  "0DC32D51892CD9579CEF98B2FB94AF4B924EB1F9FCC91EB4B4DDBD5382EA0F60"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\dto\\ExportRequest.java",
+                                           "SHA256":  "B07113BC081853091839E756874F7B7E7540BA424943FB0E2CC5DC07FDBBB167"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\dto\\FileUploadResponse.java",
+                                           "SHA256":  "F8494F217AE38AA1CD612C9B317CA65649FAB3CD03254A22C022976072FFF98B"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\dto\\ImportRequest.java",
+                                           "SHA256":  "A57034065F5D689196DBB7FF1DE6AFF3DB7B0D2277140DAAE80E55AEA528C7CF"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\dto\\LoginRequest.java",
+                                           "SHA256":  "55E8E27D463182D2511E4845B9669AB70BA8EE08875F01583E0A49267184AA01"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\dto\\RegisterRequest.java",
+                                           "SHA256":  "7FD359F2DBB1541B705318F0187DF758B924D1DCF00E0BEF4DED93488288204F"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\dto\\TransferRequest.java",
+                                           "SHA256":  "59C5795B2434F1CC61BBEDD9C71D8641F2BD1E4BCBF2157817DE8FAF55F1FD75"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\AuditLog.java",
+                                           "SHA256":  "710FCAFD2523ABCB1AE196A768D0C00DC392AB05637A613824539C97AD87F87D"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\Category.java",
+                                           "SHA256":  "D36324DE99136BFFA60D62338FBFC464D5E12B426A5D88719671B93AAD7A30BD"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\Customer.java",
+                                           "SHA256":  "E9B15800C9C72DDF6684EA068377C006AE462BD692C78C12DBC766D5F514E7DC"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\ExportDetail.java",
+                                           "SHA256":  "CEB860630AAD8105C4B41C062D6E41ADC41CC22223F1330098FFC3FBB005BE6B"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\ExportReceipt.java",
+                                           "SHA256":  "270FCACFA7E5A7AB447E67DD938C684A5D7B533BB69B51DE9F21F4AF33AAFAA3"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\ImportDetail.java",
+                                           "SHA256":  "C9919DDFA5A81F685ABC69B1C45CCB963CE0C8BA8AD70E9313E2CA8CD154E7F6"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\ImportReceipt.java",
+                                           "SHA256":  "9718BF374F944F9B49780B6B1569DD2DBE1675FC523D50DA80B0353ABCD29715"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\Inventory.java",
+                                           "SHA256":  "B1E8CB16E95B3D7B77D23BADDBA178C2B489359B064BA62414D1E685A9D81CF2"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\Product.java",
+                                           "SHA256":  "19A07C51FFDAE9A776249C94FEFB9C04C28369C57007FA159BD61D568CBE94FC"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\Role.java",
+                                           "SHA256":  "635611CE294B3F504763ADF35E69C82634AF76961B21B6DF88693944D6FD441F"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\StockTransfer.java",
+                                           "SHA256":  "EF8C2F1F383C0D5F95DAD3069253EC40EE0CEE062EB5D2C4DACA3B531F127D15"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\Supplier.java",
+                                           "SHA256":  "5CF1DBC8CC0BDD4313CCC26A729FFE9A886886E23B76659D5DA7307404A83057"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\TransferDetail.java",
+                                           "SHA256":  "CA4B44122D339B75C9FEB6D0CEA5DA76BD31ED47F14460B45BD9A6C61B238B5B"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\UserAccount.java",
+                                           "SHA256":  "BB6DAA812911D54D12E5DBC35E1374519214424F164D84AA513B2B3DA38006EE"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\entity\\Warehouse.java",
+                                           "SHA256":  "A6CD44ED668F542E58CE4723F2D8743263698F41369A1CA1963EF2FD341BD9C0"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\exception\\BusinessConflictException.java",
+                                           "SHA256":  "0F41BA4E6E3C7DE4A33FDE2DDEC7765FD6738380006055C16D6300BA6AE372D6"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\exception\\ErrorResponse.java",
+                                           "SHA256":  "79D22DD88F2E67C1AEFBF471F34A746668CE97C7D1184EB8886C9B852B874255"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\exception\\GlobalExceptionHandler.java",
+                                           "SHA256":  "1C92306DD1593F875350F5C3FEFF48628847287CDA0B3DEFC645A2A79EED34C6"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\exception\\ResourceNotFoundException.java",
+                                           "SHA256":  "CBCA5FA47EB6B7E9B3303E8CBC36AF6D08C408F301B0E2720C4B9BA3B5E54951"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\exception\\TransferBusinessException.java",
+                                           "SHA256":  "52071B054F67D1C648BA36E30C13A3A7DC651D14C7E9A052EDEDAFDDF40F10DB"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\AuditLogRepository.java",
+                                           "SHA256":  "F0431B561A5478CD29089F6B24118C0B3BF36BA0D931ACEEE039FF763675691D"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\ExportDetailRepository.java",
+                                           "SHA256":  "7F2236F703D0B85F1CF1318098A028BBDCECB1A8B1E57694EB05172F8F1A0135"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\ExportReceiptRepository.java",
+                                           "SHA256":  "FC12D308850D3FFF7A5EDF6EDA98D3E9758B9787B0723F0A00B9C13EDD67217A"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\ImportDetailRepository.java",
+                                           "SHA256":  "2625A97569C9D8622DCA00D5ADEAC61DE7D1AEFAFDDC51A694CC48676127077D"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\ImportReceiptRepository.java",
+                                           "SHA256":  "ECB15A2396320AD649F0052523071FF5BC5A041BEF8F7D61B81C712DD82B14EA"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\InventoryRepository.java",
+                                           "SHA256":  "C8A00E0730101D560AEFA9F506E3D44CF284D0091980FA63FD29B722E015A275"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\ProductRepository.java",
+                                           "SHA256":  "24AB7A1B2051E87156B9CE8340FF881F8BA550E79F161FDAC73C8627CFA5093A"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\StockTransferRepository.java",
+                                           "SHA256":  "7DF652A9F3E0A868A767CECBE571FA39787994D359616BC1D9973D351EAFBB77"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\SupplierRepository.java",
+                                           "SHA256":  "551E491511056366C30B23033E97B09BAFADD7A095EC34AD567CB34C67513863"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\TransferDetailRepository.java",
+                                           "SHA256":  "849DE98535EAC85DBE92C9D49B9D52D1AB5AAACAA88592EB065AC4A4C3B1727D"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\UserAccountRepository.java",
+                                           "SHA256":  "6E5CDC31FA0C4C7CACAD599B31131EF906879C5283F948B3B2C0032A5DA53DD5"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\repository\\WarehouseRepository.java",
+                                           "SHA256":  "EC560E1D3FA4F53D92570BC1B61064D0C530D2E14A0089361027E341FB3B5D95"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\AuditLogSearchService.java",
+                                           "SHA256":  "844DF1A9B7D75F933FE0EBAE98158BFF5D5734F52D83BB34087BD8D924BFE0EA"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\AuditLogService.java",
+                                           "SHA256":  "62CB1EF21065EC124B913A58CBCDDDD5C7ED316EE10B624DDA9992340AA6E727"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\AuthService.java",
+                                           "SHA256":  "280BD1511D66A0AB100C0ABD66DE0092186A767497A0F7089E3B02057197A141"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ExportDetailService.java",
+                                           "SHA256":  "BC4F63AC1EAD65C05243AA8481698A40AFBEBE55E1C8E0B1B0B79656D1E36E0F"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ExportReceiptService.java",
+                                           "SHA256":  "FE7633F84E30A4916B2319B68DD95DD78877B208ACC5052A4728C84AF2822A99"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ExportReportService.java",
+                                           "SHA256":  "4351E6CEB1D20418AFA546C4EF2EE367505E2F5D6C4E22241A8014B1E21F2EA6"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ExportService.java",
+                                           "SHA256":  "664738EC44F648936A1F66E88DE1D275F0CEF9331E6B57BF7944A9CEFD35360A"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\FileUploadService.java",
+                                           "SHA256":  "ED6C50A7C2D3DBE592265B543F2ED6BDA70D79AD95E1761C8750BB3DF2585CA2"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\FileValidationUtils.java",
+                                           "SHA256":  "0DF26A183776964C5F171CE8EAC4B9EF4858E3B020B5908C9D52DD20DF948DAF"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ImportDetailService.java",
+                                           "SHA256":  "EC64DD920223AF483FAB6C014C7B4656A60F440C813A41A19C88860F7D7F9C20"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ImportReceiptService.java",
+                                           "SHA256":  "6219C4180054DD283BBE832CDE194326CCC8B5F14D7D394679AE13E42E711399"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ImportReportService.java",
+                                           "SHA256":  "6429C902D1D58D1C10DCA2D9A825AA2BF8540558346A6CA96866E011EADFFD7F"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ImportService.java",
+                                           "SHA256":  "A98E3AC80CDA9BD04A543F42B504E61D2BC418E49DB6708DF9C598B0D3708B03"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\InventoryService.java",
+                                           "SHA256":  "2DD04E195CF443854C363724901D205CE0233BE82157AEF279ECF8A19F6A9F09"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\LoginAttemptService.java",
+                                           "SHA256":  "0C033DF08092A8D885ACD2086601273B96034A21004FCFE7BB2044A3AB42C10D"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ProductSearchService.java",
+                                           "SHA256":  "F8DCA14A8D0FA8E8F29622413CE99699EF9EBDD6D7A67E71263C1FF3C2723C0B"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ProductService.java",
+                                           "SHA256":  "F835B09380853ACC7A3B38B2DFD39B32FF58C0566139D6EB9272198D8DEF0851"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ReceiptAccess.java",
+                                           "SHA256":  "639511439E3374251846069123913420C162FF31CC7E974F6542A1C68CC09461"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\ReceiptApprovalService.java",
+                                           "SHA256":  "D6290A26F5BDB2A99DBCC07A5130B8C0245B1ACE28F3C7C041198D4F037031FD"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\TransferReportService.java",
+                                           "SHA256":  "4EE69686E7A23AF76D70777DECA253DECDEA67F10C284AB4DE3F6BFDBAB0905E"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\TransferService.java",
+                                           "SHA256":  "659145AF63F856DEFF12029885631BC770DB3F5D2D20D3A81A2BDF03F6D9EA4B"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\service\\WarehouseService.java",
+                                           "SHA256":  "D023162103C8757E0570276BDC1F958E8038552F004B8C70D0F90CBC54C2E8ED"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\java\\com\\example\\supplychain\\util\\PageLimits.java",
+                                           "SHA256":  "D5D76345E3AA38F38273A78DF6F45FB4AE2CF6F2C919F39C0F13F53D9136388F"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\application-b09.properties",
+                                           "SHA256":  "559A33B35B2A59E984EE951F4F2169585237824C1F8576EA203F0212556B44FD"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\application.properties",
+                                           "SHA256":  "DC21248A6138A56CF0899DB1B1617EA983077F376855DD9EE04ACBA0D99014D0"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\audit-logs.css",
+                                           "SHA256":  "945A06521018934BEB881DF5566D47EDFA9D3D38B4EE230948FE5FD20C111A0A"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\audit-logs.html",
+                                           "SHA256":  "F657C98E67F365F7EED27B3E53A4C0B97B82732750141EA430E58684375DBE76"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\audit-logs.js",
+                                           "SHA256":  "9D547A5EAE1921B063E29B810C5D906F74D6DB2E2837CCC6D8481A6B19DE5722"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\index.css",
+                                           "SHA256":  "95119AF8018A1BF9BEE87E3A1FD44EC5C8F93EE540831778C0B1F454B4FF7A74"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\index.html",
+                                           "SHA256":  "3E9E94055125CB5F5505F0E982D85A579C03240E51D4599FA70698DA5A259D32"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\reports.css",
+                                           "SHA256":  "46108F05DEEA3D0DE13090442CC1A8C4B658120B95DAE6BC83580D4382FB373B"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\reports.html",
+                                           "SHA256":  "2C3E0DC458A1169BFDDB52BA53D01D97FF65C45C3D0EEFA9688136B013B736F7"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\reports.js",
+                                           "SHA256":  "6690B38C7183FF2B476BC704E765B5CADE2AD3A6808AC97F2EDBFC28BBF4C8CE"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\vendor\\chart-4.4.1.umd.min.js",
+                                           "SHA256":  "11B5A05821E9238322E18D37ED5AFB8A04F21686CD340812C2591DECDF55AEA0"
+                                       },
+                                       {
+                                           "Path":  "src\\main\\resources\\static\\vendor\\xlsx-0.20.3.full.min.js",
+                                           "SHA256":  "AC8D774D39BB05A527F87912E2C283E237E3633120B31ACF20BC6EEF0E19EEDE"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\AuthServiceSecurityTest.java",
+                                           "SHA256":  "9A23109779F8421F6575848C16D577D40F1F636D757BA9E2D49EC571415CD43C"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\B09CompressionTest.java",
+                                           "SHA256":  "011440B638299BD45B0C7FF16BAE74D396954C7C51B79A0E9154F075BDB376B6"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\B09DetailQueryTest.java",
+                                           "SHA256":  "F96C60BC16B8A8180287A0BD31B60116481A506224ECA0CC22CBFEE78540E540"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\B09PaginationTest.java",
+                                           "SHA256":  "CB238FDA60120230ECE55F837D3E29D94CDD668DCA91A21D15223AF1CCEF0275"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\B09PublicWebTest.java",
+                                           "SHA256":  "996AEB6CD5C8C40932CB033F2EE10CC54A850590F4356FF49F860BC9490CC522"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\B09SessionRestoreTest.java",
+                                           "SHA256":  "8058EE229246815B5B3021B71E48397216B57552E9B274E5F7877FA3ACB182D3"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\CatalogTransferRoleMatrixTest.java",
+                                           "SHA256":  "F90048CCBA85FB57C69989B692298FB2DFEF591DFD9E905003AC0621F7A77EA9"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\ErrorResponseSecurityTest.java",
+                                           "SHA256":  "20ADD1EF7BED4FD2EA863F2101D58B823345196E3FD0211A6A9276BBF8DDE67C"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\FileUploadHardeningTest.java",
+                                           "SHA256":  "B2BEAB0BC0DAE61E4655A674FD960382EC7ED7A4A96CF9D3BF4F7C170D28D791"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\LoginIpRateLimitTest.java",
+                                           "SHA256":  "CE800BA7BFAE776E8C7F7CE3A5BFA004515767F7FD7A7B6EA70AA22DF98449C7"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\ReceiptApprovalWorkflowTest.java",
+                                           "SHA256":  "33B05D4AF6030A1E6AE296B6D2F3277DD77DCF888CE021E7AF2010D3314845AE"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\ReceiptOwnershipTest.java",
+                                           "SHA256":  "CF8F10C3D612A700F291C980FB246B53CA169A08DC5CD61A9CE1F0CB39DF52F8"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\ReportRoleMatrixTest.java",
+                                           "SHA256":  "53522482D6187D84A2E6BA314900FEA9BA7B1C4A95E955A252088D018367E3BC"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\SecurityHardeningTest.java",
+                                           "SHA256":  "F844FAE1EAE65370DE49972289DC311DA586BCD1949ED554F8C438ABEE3DC681"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\StockApiValidationTest.java",
+                                           "SHA256":  "7CA797F998AAEFAF6C7BB040B119B63A68D209926EABE2838A7CEDC875325F66"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\TransferRollbackTest.java",
+                                           "SHA256":  "961789ECB908E9322633D9C882AEEBA4680CB5214E333329A0EE292657D38324"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\TransferStateValidationTest.java",
+                                           "SHA256":  "8707EC06FAD2EAFB63A5C00545A03A1A965AD28E88C1D8833815D39E94C78F40"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\java\\com\\example\\supplychain\\UserAccountPasswordIntegrityTest.java",
+                                           "SHA256":  "8720E0FEDB65F980E4D1449E2E6DC9598BC442EEC01C4BE709D316958BE385D8"
+                                       },
+                                       {
+                                           "Path":  "src\\test\\resources\\application.properties",
+                                           "SHA256":  "2C887329D792227F155421244524A74938566A4AD16F611E908A3FAA06024F1F"
+                                       }
+                                   ]
+}
