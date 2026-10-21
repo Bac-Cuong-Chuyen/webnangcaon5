@@ -1,4 +1,4 @@
-param([switch]$SameTransfer)
+﻿param([switch]$SameTransfer)
 
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Net.Http
@@ -38,7 +38,16 @@ function Post-Json($path, $body) {
 
 try {
     Write-Host "Preparing isolated test: $run"
-    $account = @{ username = $run.ToLower(); password = 'Local_B06_Test_2026!' }
+    # A fresh password belongs only to this isolated test run; never log it.
+    $passwordBytes = New-Object byte[] 32
+    $passwordGenerator = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+    try {
+        $passwordGenerator.GetBytes($passwordBytes)
+        $account = @{ username = $run.ToLower(); password = [Convert]::ToBase64String($passwordBytes) }
+    } finally {
+        $passwordGenerator.Dispose()
+        [Array]::Clear($passwordBytes, 0, $passwordBytes.Length)
+    }
     $null = Post-Json '/api/auth/register' $account
     $null = Post-Json '/api/auth/login' $account
     $source = Post-Json '/api/warehouses' @{
