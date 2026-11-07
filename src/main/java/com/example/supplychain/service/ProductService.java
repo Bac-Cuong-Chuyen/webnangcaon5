@@ -15,8 +15,21 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    private final com.example.supplychain.repository.InventoryRepository inventory;
+    private final com.example.supplychain.repository.ImportDetailRepository imports;
+    private final com.example.supplychain.repository.ExportDetailRepository exports;
+    private final com.example.supplychain.repository.TransferDetailRepository transfers;
+
+    public ProductService(ProductRepository productRepository,
+            com.example.supplychain.repository.InventoryRepository inventory,
+            com.example.supplychain.repository.ImportDetailRepository imports,
+            com.example.supplychain.repository.ExportDetailRepository exports,
+            com.example.supplychain.repository.TransferDetailRepository transfers) {
         this.productRepository = productRepository;
+        this.inventory = inventory;
+        this.imports = imports;
+        this.exports = exports;
+        this.transfers = transfers;
     }
 
     // CREATE
@@ -50,11 +63,17 @@ public class ProductService {
     }
 
     // DELETE
+    @Transactional
     public void deleteProduct(Long id) {
 
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
+        if (inventory.existsByProductId(id) || imports.existsByProductId(id)
+                || exports.existsByProductId(id) || transfers.existsByProductId(id)) {
+            throw new com.example.supplychain.exception.BusinessConflictException(
+                    "Khong the xoa san pham da co ton kho hoac chung tu");
+        }
         productRepository.delete(existingProduct);
     }
 

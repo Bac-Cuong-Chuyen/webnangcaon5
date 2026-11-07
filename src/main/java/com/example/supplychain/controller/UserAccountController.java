@@ -68,13 +68,17 @@ public class UserAccountController {
                 || request.getRole() == null) {
             throw new IllegalArgumentException("Username va role khong hop le");
         }
+        String username = request.getUsername().trim();
+        if (userAccountRepository.existsByUsernameAndIdNot(username, id)) {
+            throw new com.example.supplychain.exception.BusinessConflictException("Username da ton tai");
+        }
         Role oldRole = existing.getRole();
         existing.setUsername(request.getUsername().trim());
         existing.setRole(request.getRole());
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             existing.setPassword(passwordEncoder.encode(request.getPassword()));
         }
-        UserAccount saved = userAccountRepository.save(existing);
+        UserAccount saved = userAccountRepository.saveAndFlush(existing);
         if (oldRole != saved.getRole()) {
             String actor = SecurityContextHolder.getContext().getAuthentication().getName();
             auditLogService.record(actor, "ROLE_CHANGE",

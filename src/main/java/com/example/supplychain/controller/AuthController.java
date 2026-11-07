@@ -186,6 +186,9 @@ public class AuthController {
                     SecurityContextHolder.createEmptyContext();
 
             context.setAuthentication(authentication);
+            request.getSession().setAttribute(
+                    com.example.supplychain.config.AccountSessionValidationFilter.SNAPSHOT_ATTRIBUTE,
+                    com.example.supplychain.config.AccountSessionValidationFilter.Snapshot.of(account));
 
             SecurityContextHolder.setContext(context);
 
