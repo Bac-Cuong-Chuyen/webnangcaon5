@@ -8,6 +8,8 @@ import com.example.supplychain.entity.TransferDetail;
 
 public interface TransferDetailRepository
         extends JpaRepository<TransferDetail, Long> {
+    boolean existsByProductId(Long productId);
+
 
     List<TransferDetail> findByTransferIdOrderByProductIdAsc(
             Long transferId

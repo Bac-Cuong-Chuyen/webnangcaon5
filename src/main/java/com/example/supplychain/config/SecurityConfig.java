@@ -75,6 +75,8 @@ public class SecurityConfig {
             throws Exception {
 
         http
+                .addFilterAfter(new AccountSessionValidationFilter(userAccountRepository),
+                        org.springframework.security.web.context.SecurityContextHolderFilter.class)
                 .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(

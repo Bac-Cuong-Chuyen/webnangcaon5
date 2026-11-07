@@ -20,6 +20,12 @@ public class UserAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @jakarta.persistence.Version
+    @jakarta.persistence.Column(nullable = false)
+    @org.hibernate.annotations.ColumnDefault("0")
+    private long version;
+
+    @jakarta.persistence.Column(unique = true)
     private String username;
 
     private String password;

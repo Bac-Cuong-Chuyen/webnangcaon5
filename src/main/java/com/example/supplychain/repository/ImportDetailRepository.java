@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import com.example.supplychain.entity.ImportDetail;
 
 public interface ImportDetailRepository extends JpaRepository<ImportDetail, Long> {
+    boolean existsByProductId(Long productId);
+
     List<ImportDetail> findByReceiptIdOrderByProductIdAsc(Long receiptId);
     void deleteByReceiptId(Long receiptId);
 

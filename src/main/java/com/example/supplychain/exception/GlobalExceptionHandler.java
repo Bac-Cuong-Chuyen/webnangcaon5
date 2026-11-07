@@ -114,6 +114,13 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataConflict(
+            org.springframework.dao.DataIntegrityViolationException ex, HttpServletRequest req) {
+        return build(HttpStatus.CONFLICT, "DATA_CONFLICT",
+                "Du lieu trung lap hoac dang duoc su dung", req);
+    }
+
     // 403: không đủ quyền
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleForbidden(

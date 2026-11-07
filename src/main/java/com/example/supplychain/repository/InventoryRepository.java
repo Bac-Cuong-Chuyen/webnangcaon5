@@ -13,6 +13,8 @@ import jakarta.persistence.LockModeType;
 
 public interface InventoryRepository
         extends JpaRepository<Inventory, Long> {
+    boolean existsByProductId(Long productId);
+
 
     Optional<Inventory> findByWarehouseIdAndProductId(
             Long warehouseId,
