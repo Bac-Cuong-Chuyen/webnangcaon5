@@ -10,14 +10,15 @@
   <link rel="stylesheet" href="/login.css">
   <script src="/session.js" defer></script>
   <script src="/login.js" defer></script>
+<link rel="stylesheet" href="/theme.css">
 </head>
 <body>
 <a class="skip-link" href="#authTitle">Đến biểu mẫu</a>
 <noscript><p>Cần bật JavaScript để đăng nhập tài khoản.</p></noscript>
 <main class="auth-layout">
   <section class="auth-intro" aria-labelledby="introTitle">
-    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">K</span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
-    <div class="intro-copy"><p class="eyebrow">KHÔNG GIAN LÀM VIỆC</p><h1 id="introTitle">Quản lý kho <br>thuận tiện hơn.</h1><p>Một tài khoản để làm việc với dữ liệu kho và truy cập các công cụ được cấp quyền.</p></div>
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 7 9-4 9 4v10l-9 4-9-4Z"/><path d="m3 7 9 4 9-4M12 11v10M7.5 5l9 4"/></svg></span><span><strong>Kho hàng</strong><small>Quản trị chuỗi cung ứng</small></span></a>
+    <div class="intro-copy"><p class="eyebrow">KHÔNG GIAN LÀM VIỆC</p><h1 id="introTitle">Một nơi kết nối.<br><em>Mọi hoạt động kho.</em></h1><p>Một tài khoản để làm việc với dữ liệu kho và truy cập các công cụ được cấp quyền.</p><div class="auth-process" aria-label="Quy trình quản lý kho"><span>01 <strong>Danh mục</strong></span><span>02 <strong>Nghiệp vụ</strong></span><span>03 <strong>Báo cáo</strong></span></div></div>
     <p class="intro-footer">Hệ thống Quản trị Chuỗi cung ứng và Kho hàng · Nhóm 5</p>
   </section>
   <section class="auth-panel">
@@ -29,9 +30,9 @@
       <p id="sessionNotice" class="auth-notice" role="status" hidden></p>
       <form id="authForm" aria-labelledby="authTitle">
         <label for="username">Tên đăng nhập</label>
-        <input id="username" name="username" autocomplete="username" required maxlength="100" autocapitalize="none" spellcheck="false" aria-describedby="authError">
+        <input id="username" name="username" placeholder="Nhập tên đăng nhập" autocomplete="username" required maxlength="100" autocapitalize="none" spellcheck="false" aria-describedby="authError">
         <div class="password-heading"><label for="password">Mật khẩu</label><button type="button" id="showPassword" class="text-button" aria-controls="password" aria-pressed="false">Hiện mật khẩu</button></div>
-        <input id="password" name="password" type="password" autocomplete="current-password" required aria-describedby="authError">
+        <input id="password" name="password" placeholder="Nhập mật khẩu" type="password" autocomplete="current-password" required aria-describedby="authError">
         <div id="confirmGroup" hidden><label for="confirmPassword">Nhập lại mật khẩu</label><input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" aria-describedby="authError"></div>
         <p id="registrationNote" class="muted" hidden>Tài khoản mới có vai trò nhân viên kho. Liên hệ quản trị viên nếu cần thay đổi quyền.</p>
         <p id="authError" class="error" role="alert"></p>
